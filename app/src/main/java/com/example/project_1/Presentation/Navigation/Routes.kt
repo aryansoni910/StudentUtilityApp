@@ -1,0 +1,27 @@
+package com.example.project_1.Presentation.Navigation
+
+import kotlinx.serialization.Serializable
+
+
+
+    sealed class Routes {
+        @Serializable
+        object LoginScreen
+
+        @Serializable
+        object SingUpScreen
+
+        @Serializable
+        object TeacherHomeScreen
+
+        @Serializable
+        object getstarted
+
+        @Serializable
+        object choice
+
+        @Serializable
+        object CartScreen
+
+
+    }

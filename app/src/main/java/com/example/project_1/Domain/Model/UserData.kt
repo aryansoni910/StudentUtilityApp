@@ -1,0 +1,9 @@
+package com.example.project_1.Domain.Model
+
+data class UserData(
+    val email: String= "",
+    val password: String = "",
+    val lastName :String = "",
+    val firstName: String = "",
+    val phoneNumber : String = "",
+)
