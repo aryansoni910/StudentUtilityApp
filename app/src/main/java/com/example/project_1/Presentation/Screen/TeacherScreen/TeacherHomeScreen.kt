@@ -34,12 +34,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.project_1.Presentation.Navigation.Routes
+import com.example.project_1.Presentation.ViewModel.Project1ViewModel
 import com.example.project_1.R
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun TeacherHomeScreen() {
+fun TeacherHomeScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -165,8 +168,7 @@ fun TeacherHomeScreen() {
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 15.dp).clickable {
-                                
+                            .padding(start = 15.dp).clickable {navController.navigate(Routes.YourProfile)
                             }
                     ) {
                         Image(

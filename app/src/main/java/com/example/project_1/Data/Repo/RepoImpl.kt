@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.project_1.Common.ResultState
 import com.example.project_1.Common.User_Collection
 import com.example.project_1.Domain.Model.UserData
+import com.example.project_1.Domain.Model.UserDataParent
 import com.example.project_1.Domain.Repo.Repo
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -42,6 +43,26 @@ class RepoImpl @Inject constructor(
                 close()
             }
         }
+    override fun getuserById(uid: String): Flow<ResultState<UserDataParent>> = callbackFlow {
+        trySend(ResultState.Loading)
+        firebaseFirestore.collection(User_Collection)
+            .document(uid).get().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val data = it.result.toObject(UserData::class.java)!!
+                    val userDataParent = UserDataParent(it.result.id, data)
+                    trySend(ResultState.Success(userDataParent))
+                } else {
+                    if (it.exception != null) {
+                        trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                    }
+                }
+            }
+        awaitClose {
+            close()
+        }
+    }
+
+
 
 
     override fun  registerUserWithEmailAndPassword(userData: UserData): Flow<ResultState<String>> =

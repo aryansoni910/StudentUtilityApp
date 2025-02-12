@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.project_1.Presentation.Screen.GetStarted
 import com.example.project_1.Presentation.Screen.TeacherScreen.Login
+import com.example.project_1.Presentation.Screen.TeacherScreen.ProfileScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.SingUpScreenUi
 import com.example.project_1.Presentation.Screen.TeacherScreen.TeacherHomeScreen
 import com.example.project_1.Presentation.ViewModel.Project1ViewModel
@@ -38,10 +39,13 @@ fun App() {
                 navController = navController
             )
         }
-        composable<Routes.TeacherHomeScreen> { TeacherHomeScreen() }
+        composable<Routes.TeacherHomeScreen> { TeacherHomeScreen(navController) }
         composable<Routes.SingUpScreen> {
             SingUpScreenUi(
                 viewModel = hiltViewModel(), navController = navController)
+        }
+        composable<Routes.YourProfile> {
+            ProfileScreen(firebaseAuth = FirebaseAuth.getInstance())
         }
     }
 

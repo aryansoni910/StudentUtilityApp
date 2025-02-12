@@ -1,36 +1,78 @@
 package com.example.project_1.Presentation.ViewModel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project_1.Common.ResultState
 import com.example.project_1.Domain.Model.UserData
+import com.example.project_1.Domain.Model.UserDataParent
 import com.example.project_1.Domain.UseCase.LoginUserUseCase
+import com.example.project_1.Domain.UseCase.ProfileScreenUsecase
 import com.example.project_1.Domain.UseCase.SignUPUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
-class Project1ViewModel @Inject constructor(private val loginUserUseCase: LoginUserUseCase,private val signUPUseCase: SignUPUseCase) : ViewModel() {
+class Project1ViewModel @Inject constructor(
+    private val loginUserUseCase: LoginUserUseCase,
+    private val signUPUseCase: SignUPUseCase,
+    private val profileScreenUsecase: ProfileScreenUsecase
+) : ViewModel() {
     private val _loginScreenState = MutableStateFlow(LoginScreenState())
     val loginScreenState = _loginScreenState.asStateFlow()
 
     private val _SignUpState = MutableStateFlow(SignUpScrenState())
-    val SignUpState  = _SignUpState.asStateFlow()
+    val SignUpState = _SignUpState.asStateFlow()
 
-    fun login(userData: UserData){
+    private val _profileScreenState = MutableStateFlow(ProfileScreenState())
+    val profileStateScreen = _profileScreenState.asStateFlow()
+
+    fun login(userData: UserData) {
         viewModelScope.launch {
-            loginUserUseCase.loginUser(userData).collect{
-             when(it){
-                 is ResultState.Error -> _loginScreenState.value =LoginScreenState(error = it.message)
-                 ResultState.Loading ->  _loginScreenState.value =LoginScreenState(isLoading = true)
-                 is ResultState.Success ->  _loginScreenState.value = LoginScreenState(userData = it.data)
+            loginUserUseCase.loginUser(userData).collect {
+                when (it) {
+                    is ResultState.Error -> _loginScreenState.value =
+                        LoginScreenState(error = it.message)
 
-             }
+                    ResultState.Loading -> _loginScreenState.value =
+                        LoginScreenState(isLoading = true)
+
+                    is ResultState.Success -> _loginScreenState.value =
+                        LoginScreenState(userData = it.data)
+
+                }
+            }
+        }
+    }
+
+    fun getuserById(uid: String) {
+        viewModelScope.launch {
+            profileScreenUsecase.getuserById(uid).collect{
+                when (it) {
+                    is ResultState.Error -> {
+                        _profileScreenState.value = _profileScreenState.value.copy(
+                            isLoading = false,
+                            error = it.message
+                        )
+
+                    }
+
+                    ResultState.Loading -> {
+                        _profileScreenState.value = _profileScreenState.value.copy(
+                            isLoading = true
+                        )
+                    }
+
+                    is ResultState.Success -> {
+                        _profileScreenState.value = _profileScreenState.value.copy(
+                            isLoading = false,
+                            userData = it.data
+                        )
+                    }
+                }
+
             }
         }
     }
@@ -57,13 +99,21 @@ class Project1ViewModel @Inject constructor(private val loginUserUseCase: LoginU
 
     }
 }
+
+data class ProfileScreenState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val userData: UserDataParent ?= null
+)
+
 data class LoginScreenState(
-    val isLoading : Boolean = false,
-    val error : String?= null,
-    val userData:String?= null)
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val userData: String? = null
+)
 
 data class SignUpScrenState(
-    val isLoading : Boolean = false,
-    val error : String?= null,
-    val userdata:String?= null
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val userdata: String? = null
 )

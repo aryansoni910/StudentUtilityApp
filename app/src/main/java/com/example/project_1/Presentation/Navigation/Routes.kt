@@ -21,7 +21,7 @@ import kotlinx.serialization.Serializable
         object choice
 
         @Serializable
-        object CartScreen
+        object YourProfile
 
 
     }
