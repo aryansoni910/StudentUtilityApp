@@ -176,7 +176,7 @@ fun SingUpScreenUi(
                 placeholder = { Text("Enter your ConfirmPassword") },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Person, contentDescription = null
+                        imageVector = Icons.Default.Lock, contentDescription = null
                     )
                 },
                 modifier = Modifier
