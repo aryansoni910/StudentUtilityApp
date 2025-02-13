@@ -45,7 +45,7 @@ fun App() {
                 viewModel = hiltViewModel(), navController = navController)
         }
         composable<Routes.YourProfile> {
-            ProfileScreen(firebaseAuth = FirebaseAuth.getInstance())
+            ProfileScreen(firebaseAuth = FirebaseAuth.getInstance(), navController = navController)
         }
     }
 

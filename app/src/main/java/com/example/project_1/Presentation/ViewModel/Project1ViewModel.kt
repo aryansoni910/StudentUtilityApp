@@ -1,5 +1,6 @@
 package com.example.project_1.Presentation.ViewModel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project_1.Common.ResultState
@@ -8,6 +9,7 @@ import com.example.project_1.Domain.Model.UserDataParent
 import com.example.project_1.Domain.UseCase.LoginUserUseCase
 import com.example.project_1.Domain.UseCase.ProfileScreenUsecase
 import com.example.project_1.Domain.UseCase.SignUPUseCase
+import com.example.project_1.Domain.UseCase.UserProfileImageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 class Project1ViewModel @Inject constructor(
     private val loginUserUseCase: LoginUserUseCase,
     private val signUPUseCase: SignUPUseCase,
-    private val profileScreenUsecase: ProfileScreenUsecase
+    private val profileScreenUsecase: ProfileScreenUsecase,
+    private val userProfileImageUseCase: UserProfileImageUseCase
 ) : ViewModel() {
     private val _loginScreenState = MutableStateFlow(LoginScreenState())
     val loginScreenState = _loginScreenState.asStateFlow()
@@ -28,6 +31,9 @@ class Project1ViewModel @Inject constructor(
 
     private val _profileScreenState = MutableStateFlow(ProfileScreenState())
     val profileStateScreen = _profileScreenState.asStateFlow()
+
+    private val _userProfileImageState = MutableStateFlow((UploadUserProfileImageState()))
+    val userProfileImageState =_userProfileImageState.asStateFlow()
 
     fun login(userData: UserData) {
         viewModelScope.launch {
@@ -77,6 +83,35 @@ class Project1ViewModel @Inject constructor(
         }
     }
 
+    fun upLoadUserProfileImage(uri: Uri) {
+        viewModelScope.launch {
+            userProfileImageUseCase.userProfileImage(uri).collect {
+                when (it) {
+                    is ResultState.Error -> {
+                        _userProfileImageState.value = _userProfileImageState.value.copy(
+                            isLoading = false,
+                            errorMessage = it.message
+                        )
+                    }
+
+                    is ResultState.Loading -> {
+                        _userProfileImageState.value = _userProfileImageState.value.copy(
+                            isLoading = true
+                        )
+                    }
+
+                    is ResultState.Success -> {
+                        _userProfileImageState.value = _userProfileImageState.value.copy(
+                            isLoading = false,
+                            userData = it.data
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
     fun SignUp(userData: UserData) {
         viewModelScope.launch {
             signUPUseCase.SignUp(userData).collect {
@@ -116,4 +151,10 @@ data class SignUpScrenState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val userdata: String? = null
+)
+
+data class UploadUserProfileImageState(
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val userData: String? = null
 )

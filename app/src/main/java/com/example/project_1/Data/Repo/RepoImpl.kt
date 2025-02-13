@@ -1,5 +1,6 @@
 package com.example.project_1.Data.Repo
 
+import android.net.Uri
 import android.util.Log
 import com.example.project_1.Common.ResultState
 import com.example.project_1.Common.User_Collection
@@ -10,6 +11,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -43,6 +45,8 @@ class RepoImpl @Inject constructor(
                 close()
             }
         }
+
+
     override fun getuserById(uid: String): Flow<ResultState<UserDataParent>> = callbackFlow {
         trySend(ResultState.Loading)
         firebaseFirestore.collection(User_Collection)
@@ -62,6 +66,25 @@ class RepoImpl @Inject constructor(
         }
     }
 
+
+    override fun userProfileImage(uri: Uri): Flow<ResultState<String>> = callbackFlow {
+        trySend(ResultState.Loading)
+        FirebaseStorage.getInstance().reference.child("userProfileImages/${System.currentTimeMillis()}+${firebaseAuth.currentUser?.uid}")
+            .putFile(uri ?: Uri.EMPTY).addOnCompleteListener {
+                it.result.storage.downloadUrl.addOnSuccessListener { imageUrl ->
+                    trySend(ResultState.Success(imageUrl.toString()))
+                }
+                if (it.exception != null) {
+                    trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                }
+
+            }
+        awaitClose {
+            close()
+        }
+
+
+    }
 
 
 

@@ -6,6 +6,7 @@ data class UserData(
     val lastName: String = "",
     val firstName: String = "",
     val phoneNumber: String = "",
+    val profileImage: String =""
 )
 
 data class UserDataParent(val nodeId: String = "", val userData: UserData = UserData())
