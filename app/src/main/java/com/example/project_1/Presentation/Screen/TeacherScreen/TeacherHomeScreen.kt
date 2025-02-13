@@ -201,7 +201,7 @@ fun TeacherHomeScreen(navController: NavController) {
                             .padding(start = 10.dp)
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.report),
+                            painter = painterResource(id = R.drawable.help),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(height = 120.dp, width = 120.dp)
@@ -209,7 +209,7 @@ fun TeacherHomeScreen(navController: NavController) {
                                 .padding(top = 20.dp)
                         )
                         Text(
-                            text = "Report", style = TextStyle(
+                            text = "Help", style = TextStyle(
                                 fontSize = 30.sp,
                                 fontStyle = FontStyle.Normal,
                                 fontWeight = FontWeight.Bold

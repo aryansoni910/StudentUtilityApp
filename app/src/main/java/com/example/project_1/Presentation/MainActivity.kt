@@ -21,6 +21,7 @@ import com.example.project_1.Presentation.Screen.TeacherScreen.AddStudentScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.Login
 import com.example.project_1.Presentation.Screen.TeacherScreen.SingUpScreenUi
 import com.example.project_1.Presentation.Screen.TeacherScreen.TeacherHomeScreen
+import com.example.project_1.Presentation.Screen.TeacherScreen.gatepass
 import com.example.project_1.ui.theme.Project_1Theme
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Project_1Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                App()
+                  gatepass()
                  }
             }
         }}}
