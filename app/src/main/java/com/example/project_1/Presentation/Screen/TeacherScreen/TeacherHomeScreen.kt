@@ -213,7 +213,7 @@ fun TeacherHomeScreen(navController: NavController) {
                                 fontSize = 30.sp,
                                 fontStyle = FontStyle.Normal,
                                 fontWeight = FontWeight.Bold
-                            ), modifier = Modifier.padding(top = 20.dp, start = 40.dp)
+                            ), modifier = Modifier.padding(top = 20.dp, start = 50.dp)
                         )
                     }
                 }

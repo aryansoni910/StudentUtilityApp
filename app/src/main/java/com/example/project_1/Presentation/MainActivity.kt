@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Project_1Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                  gatepass()
+                  App()
                  }
             }
         }}}
