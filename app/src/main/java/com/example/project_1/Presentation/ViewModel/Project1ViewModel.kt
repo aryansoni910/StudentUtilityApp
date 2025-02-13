@@ -4,8 +4,10 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project_1.Common.ResultState
+import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
+import com.example.project_1.Domain.UseCase.AddStudentUseCase
 import com.example.project_1.Domain.UseCase.LoginUserUseCase
 import com.example.project_1.Domain.UseCase.ProfileScreenUsecase
 import com.example.project_1.Domain.UseCase.SignUPUseCase
@@ -21,7 +23,8 @@ class Project1ViewModel @Inject constructor(
     private val loginUserUseCase: LoginUserUseCase,
     private val signUPUseCase: SignUPUseCase,
     private val profileScreenUsecase: ProfileScreenUsecase,
-    private val userProfileImageUseCase: UserProfileImageUseCase
+    private val userProfileImageUseCase: UserProfileImageUseCase,
+    private val addStudentUseCase: AddStudentUseCase
 ) : ViewModel() {
     private val _loginScreenState = MutableStateFlow(LoginScreenState())
     val loginScreenState = _loginScreenState.asStateFlow()
@@ -34,6 +37,9 @@ class Project1ViewModel @Inject constructor(
 
     private val _userProfileImageState = MutableStateFlow((UploadUserProfileImageState()))
     val userProfileImageState =_userProfileImageState.asStateFlow()
+
+    private val _addStudentState = MutableStateFlow(AddStudentScreenState())
+    val addStudentState = _addStudentState.asStateFlow()
 
     fun login(userData: UserData) {
         viewModelScope.launch {
@@ -110,7 +116,27 @@ class Project1ViewModel @Inject constructor(
             }
         }
     }
+    fun AddStudent(studentData: StudentData) {
+        viewModelScope.launch {
+            addStudentUseCase.addStudentdata(studentData).collect {
+                when (it) {
+                    is ResultState.Error -> {
+                        _addStudentState.value = AddStudentScreenState(error = it.message)
+                    }
 
+                    ResultState.Loading -> {
+                        _addStudentState.value = AddStudentScreenState(isLoading = true)
+                    }
+
+                    is ResultState.Success -> {
+                        _addStudentState.value = AddStudentScreenState(studentdata = it.data)
+                    }
+                }
+            }
+
+        }
+
+    }
 
     fun SignUp(userData: UserData) {
         viewModelScope.launch {
@@ -157,4 +183,10 @@ data class UploadUserProfileImageState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val userData: String? = null
+)
+
+data class AddStudentScreenState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val studentdata: String? = null
 )

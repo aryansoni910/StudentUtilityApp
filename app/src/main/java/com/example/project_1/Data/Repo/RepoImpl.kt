@@ -3,7 +3,9 @@ package com.example.project_1.Data.Repo
 import android.net.Uri
 import android.util.Log
 import com.example.project_1.Common.ResultState
+import com.example.project_1.Common.Student_Collection
 import com.example.project_1.Common.User_Collection
+import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
 import com.example.project_1.Domain.Repo.Repo
@@ -86,9 +88,42 @@ class RepoImpl @Inject constructor(
 
     }
 
+    override fun StudentregisterUserWithEmailAndPassword(studentData: StudentData): Flow<ResultState<String>> =
+        callbackFlow {
+            trySend(ResultState.Loading)
+
+            firebaseAuth.createUserWithEmailAndPassword(studentData.email, studentData.password)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        firebaseFirestore.collection(Student_Collection)
+                            .document(it.result?.user?.uid.toString()).set(studentData)
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    trySend(ResultState.Success("User Registered Successfully"))
+
+                                } else {
+                                    if (it.exception != null) {
+                                        trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                                    }
+                                }
+                            }
+
+                    } else {
+                        if (it.exception != null) {
+                            trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                        }
+                    }
+
+                }
+            awaitClose {
+                close()
+            }
 
 
-    override fun  registerUserWithEmailAndPassword(userData: UserData): Flow<ResultState<String>> =
+        }
+
+
+    override fun registerUserWithEmailAndPassword(userData: UserData): Flow<ResultState<String>> =
         callbackFlow {
             trySend(ResultState.Loading)
 

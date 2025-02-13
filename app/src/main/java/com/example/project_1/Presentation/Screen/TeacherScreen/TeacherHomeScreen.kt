@@ -61,22 +61,24 @@ fun TeacherHomeScreen(navController: NavController) {
 
             )
         },
-        content = { innerpadding-> // Add paddingValues here
+        content = { innerpadding -> // Add paddingValues here
             Column(
                 modifier = Modifier
-                    .fillMaxSize().padding(innerpadding)
+                    .fillMaxSize()
+                    .padding(innerpadding)
                     .background(color = Color.LightGray)
                     .background(
                         Color(0xFFFCF7D3)
                     )
-                    .padding(top= 60.dp)
+                    .padding(top = 60.dp)
             ) {
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 15.dp).clickable {  }
+                            .padding(start = 15.dp)
+                            .clickable { }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.attendance),
@@ -98,7 +100,8 @@ fun TeacherHomeScreen(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 10.dp).clickable {  }
+                            .padding(start = 10.dp)
+                            .clickable { }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.marks),
@@ -146,13 +149,15 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 10.dp)
+                            .clickable { navController.navigate(Routes.AddStudent) }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.friend),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(height = 120.dp, width = 120.dp)
-                                .align(Alignment.CenterHorizontally).padding(top = 10.dp)
+                                .align(Alignment.CenterHorizontally)
+                                .padding(top = 10.dp)
                         )
                         Text(
                             text = "AddStudent", style = TextStyle(
@@ -168,7 +173,9 @@ fun TeacherHomeScreen(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 15.dp).clickable {navController.navigate(Routes.YourProfile)
+                            .padding(start = 15.dp)
+                            .clickable {
+                                navController.navigate(Routes.YourProfile)
                             }
                     ) {
                         Image(
@@ -176,7 +183,8 @@ fun TeacherHomeScreen(navController: NavController) {
                             contentDescription = null,
                             modifier = Modifier
                                 .size(height = 120.dp, width = 120.dp)
-                                .align(Alignment.CenterHorizontally).padding(top = 10.dp)
+                                .align(Alignment.CenterHorizontally)
+                                .padding(top = 10.dp)
                         )
                         Text(
                             text = "Your Profile", style = TextStyle(
@@ -197,7 +205,8 @@ fun TeacherHomeScreen(navController: NavController) {
                             contentDescription = null,
                             modifier = Modifier
                                 .size(height = 120.dp, width = 120.dp)
-                                .align(Alignment.CenterHorizontally).padding(top = 20.dp)
+                                .align(Alignment.CenterHorizontally)
+                                .padding(top = 20.dp)
                         )
                         Text(
                             text = "Report", style = TextStyle(

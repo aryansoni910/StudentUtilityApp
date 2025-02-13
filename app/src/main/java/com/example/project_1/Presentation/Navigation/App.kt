@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.project_1.Presentation.Screen.GetStarted
+import com.example.project_1.Presentation.Screen.TeacherScreen.AddStudentScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.Login
 import com.example.project_1.Presentation.Screen.TeacherScreen.ProfileScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.SingUpScreenUi
@@ -42,10 +43,14 @@ fun App() {
         composable<Routes.TeacherHomeScreen> { TeacherHomeScreen(navController) }
         composable<Routes.SingUpScreen> {
             SingUpScreenUi(
-                viewModel = hiltViewModel(), navController = navController)
+                viewModel = hiltViewModel(), navController = navController
+            )
         }
         composable<Routes.YourProfile> {
             ProfileScreen(firebaseAuth = FirebaseAuth.getInstance(), navController = navController)
+        }
+        composable<Routes.AddStudent> {
+            AddStudentScreen(navController)
         }
     }
 

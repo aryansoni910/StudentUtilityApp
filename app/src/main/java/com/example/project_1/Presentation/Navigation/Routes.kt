@@ -23,5 +23,7 @@ import kotlinx.serialization.Serializable
         @Serializable
         object YourProfile
 
+        @Serializable
+        object AddStudent
 
     }
