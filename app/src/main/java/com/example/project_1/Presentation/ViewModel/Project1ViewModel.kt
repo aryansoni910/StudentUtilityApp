@@ -1,19 +1,26 @@
 package com.example.project_1.Presentation.ViewModel
 
 import android.net.Uri
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.project_1.Common.ApiKey
 import com.example.project_1.Common.ResultState
+import com.example.project_1.Domain.Model.ChatBotEnum
 import com.example.project_1.Domain.Model.GatePassdata
 import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
+import com.example.project_1.Domain.Model.chatbotData
 import com.example.project_1.Domain.UseCase.AddStudentUseCase
 import com.example.project_1.Domain.UseCase.GatePassUseCase
 import com.example.project_1.Domain.UseCase.LoginUserUseCase
 import com.example.project_1.Domain.UseCase.ProfileScreenUsecase
 import com.example.project_1.Domain.UseCase.SignUPUseCase
 import com.example.project_1.Domain.UseCase.UserProfileImageUseCase
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.content
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,7 +46,7 @@ class Project1ViewModel @Inject constructor(
     val profileStateScreen = _profileScreenState.asStateFlow()
 
     private val _userProfileImageState = MutableStateFlow((UploadUserProfileImageState()))
-    val userProfileImageState =_userProfileImageState.asStateFlow()
+    val userProfileImageState = _userProfileImageState.asStateFlow()
 
     private val _addStudentState = MutableStateFlow(AddStudentScreenState())
     val addStudentState = _addStudentState.asStateFlow()
@@ -47,6 +54,28 @@ class Project1ViewModel @Inject constructor(
     private val _gatePassState = MutableStateFlow(GatePassScreenState())
     val gatePassState = _gatePassState.asStateFlow()
 
+
+    private val genAI by lazy {
+        GenerativeModel(
+            modelName = "gemini-pro",
+            apiKey = ApiKey
+        )
+    }
+    val list by lazy {
+        mutableStateListOf<chatbotData>()
+    }
+
+    fun sendMessage(message: String) = viewModelScope.launch {
+        val chat = genAI.startChat()
+
+        list.add(chatbotData(message, ChatBotEnum.User.role))
+
+        chat.sendMessage(
+            content(ChatBotEnum.User.role) { text(message) }
+        ).text?.let {
+            list.add(chatbotData(it, ChatBotEnum.Model.role))
+        }
+    }
 
 
     fun login(userData: UserData) {
@@ -67,13 +96,18 @@ class Project1ViewModel @Inject constructor(
         }
     }
 
-    fun gatepass(gatePassdata: GatePassdata){
+    fun gatepass(gatePassdata: GatePassdata) {
         viewModelScope.launch {
-            gatePassUseCase.gatepass(gatePassdata).collect{
-                when(it){
-                    is ResultState.Error -> _gatePassState.value = GatePassScreenState(error = it.message)
-                    ResultState.Loading -> _gatePassState.value =GatePassScreenState(isLoading = true)
-                    is ResultState.Success -> _gatePassState.value =GatePassScreenState(gatepassdata = it.data)
+            gatePassUseCase.gatepass(gatePassdata).collect {
+                when (it) {
+                    is ResultState.Error -> _gatePassState.value =
+                        GatePassScreenState(error = it.message)
+
+                    ResultState.Loading -> _gatePassState.value =
+                        GatePassScreenState(isLoading = true)
+
+                    is ResultState.Success -> _gatePassState.value =
+                        GatePassScreenState(gatepassdata = it.data)
                 }
             }
         }
@@ -81,7 +115,7 @@ class Project1ViewModel @Inject constructor(
 
     fun getuserById(uid: String) {
         viewModelScope.launch {
-            profileScreenUsecase.getuserById(uid).collect{
+            profileScreenUsecase.getuserById(uid).collect {
                 when (it) {
                     is ResultState.Error -> {
                         _profileScreenState.value = _profileScreenState.value.copy(
@@ -136,6 +170,7 @@ class Project1ViewModel @Inject constructor(
             }
         }
     }
+
     fun AddStudent(studentData: StudentData) {
         viewModelScope.launch {
             addStudentUseCase.addStudentdata(studentData).collect {
@@ -184,7 +219,7 @@ class Project1ViewModel @Inject constructor(
 data class ProfileScreenState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val userData: UserDataParent ?= null
+    val userData: UserDataParent? = null
 )
 
 data class LoginScreenState(
@@ -210,8 +245,9 @@ data class AddStudentScreenState(
     val error: String? = null,
     val studentdata: String? = null
 )
+
 data class GatePassScreenState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val gatepassdata: String?= null
+    val gatepassdata: String? = null
 )
