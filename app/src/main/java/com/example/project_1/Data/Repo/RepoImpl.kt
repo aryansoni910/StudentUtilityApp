@@ -2,9 +2,11 @@ package com.example.project_1.Data.Repo
 
 import android.net.Uri
 import android.util.Log
+import com.example.project_1.Common.Gate_Pass
 import com.example.project_1.Common.ResultState
 import com.example.project_1.Common.Student_Collection
 import com.example.project_1.Common.User_Collection
+import com.example.project_1.Domain.Model.GatePassdata
 import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
@@ -121,6 +123,25 @@ class RepoImpl @Inject constructor(
 
 
         }
+
+    override fun gatepass(gatePassdata: GatePassdata): Flow<ResultState<String>> = callbackFlow{
+
+        trySend(ResultState.Loading)
+        val gatepassId = UUID.randomUUID().toString()
+        firebaseFirestore.collection(Gate_Pass).document(gatepassId).set(gatePassdata).addOnCompleteListener{
+            if(it.isSuccessful){
+                trySend(ResultState.Success("Gate Pass Added Successfully"))
+            }
+            else{
+                if(it.exception != null){
+                    trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                }
+            }
+        }
+        awaitClose{
+            close()
+        }
+    }
 
 
     override fun registerUserWithEmailAndPassword(userData: UserData): Flow<ResultState<String>> =

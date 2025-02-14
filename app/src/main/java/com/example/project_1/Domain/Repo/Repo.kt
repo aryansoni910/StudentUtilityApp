@@ -2,6 +2,7 @@ package com.example.project_1.Domain.Repo
 
 import android.net.Uri
 import com.example.project_1.Common.ResultState
+import com.example.project_1.Domain.Model.GatePassdata
 import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
@@ -13,4 +14,5 @@ interface Repo  {
     fun getuserById(uid:String): Flow<ResultState<UserDataParent>>
     fun userProfileImage(uri: Uri):Flow<ResultState<String>>
     fun StudentregisterUserWithEmailAndPassword(studentData: StudentData):Flow<ResultState<String>>
+    fun gatepass(gatePassdata: GatePassdata):Flow<ResultState<String>>
 }

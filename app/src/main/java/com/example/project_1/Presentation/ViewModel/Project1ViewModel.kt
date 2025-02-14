@@ -4,10 +4,12 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project_1.Common.ResultState
+import com.example.project_1.Domain.Model.GatePassdata
 import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
 import com.example.project_1.Domain.UseCase.AddStudentUseCase
+import com.example.project_1.Domain.UseCase.GatePassUseCase
 import com.example.project_1.Domain.UseCase.LoginUserUseCase
 import com.example.project_1.Domain.UseCase.ProfileScreenUsecase
 import com.example.project_1.Domain.UseCase.SignUPUseCase
@@ -24,7 +26,8 @@ class Project1ViewModel @Inject constructor(
     private val signUPUseCase: SignUPUseCase,
     private val profileScreenUsecase: ProfileScreenUsecase,
     private val userProfileImageUseCase: UserProfileImageUseCase,
-    private val addStudentUseCase: AddStudentUseCase
+    private val addStudentUseCase: AddStudentUseCase,
+    private val gatePassUseCase: GatePassUseCase
 ) : ViewModel() {
     private val _loginScreenState = MutableStateFlow(LoginScreenState())
     val loginScreenState = _loginScreenState.asStateFlow()
@@ -41,6 +44,11 @@ class Project1ViewModel @Inject constructor(
     private val _addStudentState = MutableStateFlow(AddStudentScreenState())
     val addStudentState = _addStudentState.asStateFlow()
 
+    private val _gatePassState = MutableStateFlow(GatePassScreenState())
+    val gatePassState = _gatePassState.asStateFlow()
+
+
+
     fun login(userData: UserData) {
         viewModelScope.launch {
             loginUserUseCase.loginUser(userData).collect {
@@ -54,6 +62,18 @@ class Project1ViewModel @Inject constructor(
                     is ResultState.Success -> _loginScreenState.value =
                         LoginScreenState(userData = it.data)
 
+                }
+            }
+        }
+    }
+
+    fun gatepass(gatePassdata: GatePassdata){
+        viewModelScope.launch {
+            gatePassUseCase.gatepass(gatePassdata).collect{
+                when(it){
+                    is ResultState.Error -> _gatePassState.value = GatePassScreenState(error = it.message)
+                    ResultState.Loading -> _gatePassState.value =GatePassScreenState(isLoading = true)
+                    is ResultState.Success -> _gatePassState.value =GatePassScreenState(gatepassdata = it.data)
                 }
             }
         }
@@ -189,4 +209,9 @@ data class AddStudentScreenState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val studentdata: String? = null
+)
+data class GatePassScreenState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val gatepassdata: String?= null
 )

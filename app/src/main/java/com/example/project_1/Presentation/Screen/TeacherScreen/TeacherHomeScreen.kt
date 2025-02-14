@@ -127,6 +127,7 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 15.dp)
+                            .clickable { navController.navigate(Routes.GatePass) }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.gatepass),

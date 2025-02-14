@@ -26,4 +26,7 @@ import kotlinx.serialization.Serializable
         @Serializable
         object AddStudent
 
+        @Serializable
+        object GatePass
+
     }

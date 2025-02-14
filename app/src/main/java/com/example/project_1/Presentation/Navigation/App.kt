@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.project_1.Presentation.Screen.GetStarted
 import com.example.project_1.Presentation.Screen.TeacherScreen.AddStudentScreen
+import com.example.project_1.Presentation.Screen.TeacherScreen.GatePassScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.Login
 import com.example.project_1.Presentation.Screen.TeacherScreen.ProfileScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.SingUpScreenUi
@@ -40,7 +41,9 @@ fun App() {
                 navController = navController
             )
         }
-        composable<Routes.TeacherHomeScreen> { TeacherHomeScreen(navController) }
+        composable<Routes.TeacherHomeScreen> {
+            TeacherHomeScreen(navController)
+        }
         composable<Routes.SingUpScreen> {
             SingUpScreenUi(
                 viewModel = hiltViewModel(), navController = navController
@@ -51,6 +54,9 @@ fun App() {
         }
         composable<Routes.AddStudent> {
             AddStudentScreen(navController)
+        }
+        composable<Routes.GatePass> {
+            GatePassScreen(navController)
         }
     }
 
