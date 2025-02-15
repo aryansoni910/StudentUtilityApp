@@ -101,7 +101,7 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 10.dp)
-                            .clickable { }
+                            .clickable { navController.navigate(Routes.Sem)}
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.marks),
@@ -200,6 +200,7 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 10.dp)
+                            .clickable { navController.navigate(Routes.Help) }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.help),

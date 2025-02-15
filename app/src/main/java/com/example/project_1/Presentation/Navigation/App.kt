@@ -11,11 +11,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.project_1.Presentation.Screen.GetStarted
 import com.example.project_1.Presentation.Screen.TeacherScreen.AddStudentScreen
+import com.example.project_1.Presentation.Screen.TeacherScreen.ChatBox
 import com.example.project_1.Presentation.Screen.TeacherScreen.GatePassScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.Login
 import com.example.project_1.Presentation.Screen.TeacherScreen.ProfileScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.SingUpScreenUi
 import com.example.project_1.Presentation.Screen.TeacherScreen.TeacherHomeScreen
+import com.example.project_1.Presentation.Screen.TeacherScreen.markssem
 import com.example.project_1.Presentation.ViewModel.Project1ViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -57,6 +59,12 @@ fun App() {
         }
         composable<Routes.GatePass> {
             GatePassScreen(navController)
+        }
+        composable<Routes.Help> {
+            ChatBox()
+        }
+        composable<Routes.Sem> {
+            markssem()
         }
     }
 

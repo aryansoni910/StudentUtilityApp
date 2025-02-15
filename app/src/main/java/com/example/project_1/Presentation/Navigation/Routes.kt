@@ -29,4 +29,10 @@ import kotlinx.serialization.Serializable
         @Serializable
         object GatePass
 
+        @Serializable
+        object Help
+
+        @Serializable
+        object Sem
+
     }
