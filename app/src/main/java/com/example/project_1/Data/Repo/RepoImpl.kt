@@ -8,11 +8,14 @@ import com.example.project_1.Common.Student_Collection
 import com.example.project_1.Common.User_Collection
 import com.example.project_1.Domain.Model.GatePassdata
 import com.example.project_1.Domain.Model.StudentData
+import com.example.project_1.Domain.Model.Subject
+import com.example.project_1.Domain.Model.SubjectDataParent
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
 import com.example.project_1.Domain.Repo.Repo
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
@@ -21,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.math.log
 
 class RepoImpl @Inject constructor(
     var firebaseAuth: FirebaseAuth,
@@ -69,6 +73,72 @@ class RepoImpl @Inject constructor(
             close()
         }
     }
+
+    override fun getallStudent5(): Flow<ResultState<List<StudentData>>> = callbackFlow {
+        trySend(ResultState.Loading) // Emit the loading state
+
+        // Perform Firebase query to fetch students in semester 5
+        firebaseFirestore.collection(Student_Collection)
+            .whereEqualTo("sem", "5")
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Convert the result to a list of StudentData
+                    val data = task.result?.toObjects(StudentData::class.java) ?: emptyList()
+
+                    // Emit the success state with the data
+                    trySend(ResultState.Success(data))
+                } else {
+                    // If there's an error, send the error message
+                    task.exception?.localizedMessage?.let {
+                        trySend(ResultState.Error(it))
+                    }
+                }
+            }
+
+        // Ensure the flow is properly closed
+        awaitClose {
+            // Close the flow when the operation finishes or is cancelled
+            close()
+        }
+    }
+
+    override fun addMarks5(studentDataParent: SubjectDataParent): Flow<ResultState<StudentData>> =
+        callbackFlow {
+            trySend(ResultState.Loading)
+
+            // Assuming that 'email' is not the document ID, but a field in the document
+            firebaseFirestore.collection(Student_Collection)
+                .whereEqualTo("email", studentDataParent.nodeId)  // Querying by the 'email' field
+                .get()
+                .addOnSuccessListener { result ->
+                    if (!result.isEmpty) {
+                        val document =
+                            result.documents[0]  // We assume there's only one student with that email
+                        val studentData =
+                            document.toObject(StudentData::class.java)  // Deserialize student data
+
+                        // Now add the subject marks to the student's 'subjects' array
+                        firebaseFirestore.collection(Student_Collection)
+                            .document(document.id) // Use the document's ID
+                            .update("subjects", FieldValue.arrayUnion(studentDataParent.subject))
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    Log.d("add", "addMarks5: add data${studentData} ")
+                                } else {
+                                    trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                                }
+                            }
+                    } else {
+                        trySend(ResultState.Error("No student found with that email"))
+                    }
+                }
+                .addOnFailureListener {
+                    trySend(ResultState.Error(it.localizedMessage.toString()))
+                }
+
+            awaitClose { close() }
+        }
 
 
     override fun userProfileImage(uri: Uri): Flow<ResultState<String>> = callbackFlow {
@@ -124,21 +194,21 @@ class RepoImpl @Inject constructor(
 
         }
 
-    override fun gatepass(gatePassdata: GatePassdata): Flow<ResultState<String>> = callbackFlow{
+    override fun gatepass(gatePassdata: GatePassdata): Flow<ResultState<String>> = callbackFlow {
 
         trySend(ResultState.Loading)
         val gatepassId = UUID.randomUUID().toString()
-        firebaseFirestore.collection(Gate_Pass).document(gatepassId).set(gatePassdata).addOnCompleteListener{
-            if(it.isSuccessful){
-                trySend(ResultState.Success("Gate Pass Added Successfully"))
-            }
-            else{
-                if(it.exception != null){
-                    trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+        firebaseFirestore.collection(Gate_Pass).document(gatepassId).set(gatePassdata)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    trySend(ResultState.Success("Gate Pass Added Successfully"))
+                } else {
+                    if (it.exception != null) {
+                        trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                    }
                 }
             }
-        }
-        awaitClose{
+        awaitClose {
             close()
         }
     }

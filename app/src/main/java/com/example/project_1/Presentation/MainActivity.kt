@@ -19,6 +19,7 @@ import com.example.project_1.Presentation.Navigation.Routes
 import com.example.project_1.Presentation.Screen.GetStarted
 import com.example.project_1.Presentation.Screen.TeacherScreen.AddStudentScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.ChatBox
+import com.example.project_1.Presentation.Screen.TeacherScreen.GetAllStudentsfor5
 import com.example.project_1.Presentation.Screen.TeacherScreen.Login
 import com.example.project_1.Presentation.Screen.TeacherScreen.SingUpScreenUi
 import com.example.project_1.Presentation.Screen.TeacherScreen.TeacherHomeScreen
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Project_1Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                  App()
+              GetAllStudentsfor5()
                 }
             }
         }}}

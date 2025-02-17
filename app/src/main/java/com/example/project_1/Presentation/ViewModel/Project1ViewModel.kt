@@ -4,17 +4,20 @@ import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.project_1.Common.ApiKey
 import com.example.project_1.Common.ResultState
 import com.example.project_1.Domain.Model.ChatBotEnum
 import com.example.project_1.Domain.Model.GatePassdata
 import com.example.project_1.Domain.Model.StudentData
+import com.example.project_1.Domain.Model.Subject
+import com.example.project_1.Domain.Model.SubjectDataParent
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
 import com.example.project_1.Domain.Model.chatbotData
+import com.example.project_1.Domain.UseCase.AddMarks5UseCase
 import com.example.project_1.Domain.UseCase.AddStudentUseCase
 import com.example.project_1.Domain.UseCase.GatePassUseCase
+import com.example.project_1.Domain.UseCase.GetAllStudents5UseCase
 import com.example.project_1.Domain.UseCase.LoginUserUseCase
 import com.example.project_1.Domain.UseCase.ProfileScreenUsecase
 import com.example.project_1.Domain.UseCase.SignUPUseCase
@@ -34,7 +37,9 @@ class Project1ViewModel @Inject constructor(
     private val profileScreenUsecase: ProfileScreenUsecase,
     private val userProfileImageUseCase: UserProfileImageUseCase,
     private val addStudentUseCase: AddStudentUseCase,
-    private val gatePassUseCase: GatePassUseCase
+    private val gatePassUseCase: GatePassUseCase,
+    private val getAllStudents5UseCase: GetAllStudents5UseCase,
+    private val addMarks5UseCase: AddMarks5UseCase
 ) : ViewModel() {
     private val _loginScreenState = MutableStateFlow(LoginScreenState())
     val loginScreenState = _loginScreenState.asStateFlow()
@@ -53,6 +58,12 @@ class Project1ViewModel @Inject constructor(
 
     private val _gatePassState = MutableStateFlow(GatePassScreenState())
     val gatePassState = _gatePassState.asStateFlow()
+
+    private val _getAllStudentsState = MutableStateFlow(GetAllStudentsState())
+    val getAllStudentsState = _getAllStudentsState.asStateFlow()
+
+    private val _addMarksScreenState = MutableStateFlow(AddMarksScreenState())
+    val addMarksScreenState = _addMarksScreenState.asStateFlow()
 
 
     private val genAI by lazy {
@@ -77,6 +88,29 @@ class Project1ViewModel @Inject constructor(
         }
     }
 
+    fun addMarks(studentDataParent: SubjectDataParent) {
+        viewModelScope.launch {
+            addMarks5UseCase.addMarks(studentDataParent).collect {
+                when (it) {
+                    is ResultState.Error -> {
+                        _addMarksScreenState.value =
+                            AddMarksScreenState(error = it.message)
+                    }
+
+                    ResultState.Loading -> {
+                        _addMarksScreenState.value =
+                            AddMarksScreenState(isLoading = true)
+                    }
+
+                    is ResultState.Success -> {
+                        _addMarksScreenState.value =
+                            AddMarksScreenState(addmarks = it.data.toString())
+                    }
+                }
+            }
+        }
+    }
+
 
     fun login(userData: UserData) {
         viewModelScope.launch {
@@ -95,6 +129,31 @@ class Project1ViewModel @Inject constructor(
             }
         }
     }
+
+    fun getAllStudents5() {
+        viewModelScope.launch {
+            getAllStudents5UseCase.getAllStudents5().collect {
+                when (it) {
+                    is ResultState.Error -> {
+                        // Update only the error message
+                        _getAllStudentsState.value =
+                            GetAllStudentsState(error = it.message ?: "Unknown error")
+                    }
+
+                    ResultState.Loading -> {
+                        // Set loading state
+                        _getAllStudentsState.value = GetAllStudentsState(isLoading = true)
+                    }
+
+                    is ResultState.Success -> {
+                        // Set the list of students (it.data should be a List<StudentData>)
+                        _getAllStudentsState.value = GetAllStudentsState(getallstudent = it.data)
+                    }
+                }
+            }
+        }
+    }
+
 
     fun gatepass(gatePassdata: GatePassdata) {
         viewModelScope.launch {
@@ -250,4 +309,16 @@ data class GatePassScreenState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val gatepassdata: String? = null
+)
+
+data class GetAllStudentsState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val getallstudent: List<StudentData> = emptyList(),
+)
+
+data class AddMarksScreenState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val addmarks: String? = null
 )
