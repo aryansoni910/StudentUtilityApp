@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 
 
-    sealed class Routes {
+  sealed class Routes {
         @Serializable
         object LoginScreen
 
@@ -35,4 +35,24 @@ import kotlinx.serialization.Serializable
         @Serializable
         object Sem
 
-    }
+        @Serializable
+        object Marks5
+
+        @Serializable
+        object LoadingScreen
+
+        @Serializable
+        object AttendanceSem
+
+        @Serializable
+        object AttendanceScreen
+
+        @Serializable
+        object StudentLogin
+
+        @Serializable
+        object StudentHomeScreen
+
+        @Serializable
+        object StudentProfileScreen
+   }

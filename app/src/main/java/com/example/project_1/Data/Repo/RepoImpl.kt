@@ -6,8 +6,11 @@ import com.example.project_1.Common.Gate_Pass
 import com.example.project_1.Common.ResultState
 import com.example.project_1.Common.Student_Collection
 import com.example.project_1.Common.User_Collection
+import com.example.project_1.Domain.Model.Attendance
+import com.example.project_1.Domain.Model.AttendanceDataParent
 import com.example.project_1.Domain.Model.GatePassdata
 import com.example.project_1.Domain.Model.StudentData
+import com.example.project_1.Domain.Model.StudentDataParent
 import com.example.project_1.Domain.Model.Subject
 import com.example.project_1.Domain.Model.SubjectDataParent
 import com.example.project_1.Domain.Model.UserData
@@ -139,6 +142,93 @@ class RepoImpl @Inject constructor(
 
             awaitClose { close() }
         }
+
+    override fun addattendance(attendanceDataParent: AttendanceDataParent): Flow<ResultState<StudentData>> =
+        callbackFlow {
+            trySend(ResultState.Loading)
+
+            firebaseFirestore.collection(Student_Collection)
+                .whereEqualTo(
+                    "email",
+                    attendanceDataParent.nodeId
+                )  // Querying by the 'email' field
+                .get()
+                .addOnSuccessListener { result ->
+                    if (!result.isEmpty) {
+                        val document =
+                            result.documents[0]  // We assume there's only one student with that email
+                        val studentData =
+                            document.toObject(StudentData::class.java)  // Deserialize student data
+
+                        // Now add the subject marks to the student's 'subjects' array
+                        firebaseFirestore.collection(Student_Collection)
+                            .document(document.id) // Use the document's ID
+                            .update(
+                                "attendance",
+                                FieldValue.arrayUnion(attendanceDataParent.attendance)
+                            )
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    Log.d("add", "addMarks5: add data${studentData} ")
+                                } else {
+                                    trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                                }
+                            }
+                    } else {
+                        trySend(ResultState.Error("No student found with that email"))
+                    }
+                }
+                .addOnFailureListener {
+                    trySend(ResultState.Error(it.localizedMessage.toString()))
+                }
+
+            awaitClose { close() }
+
+
+        }
+
+    override fun StudentLoginWithEmailAndPassword(studentData: StudentData): Flow<ResultState<String>> = callbackFlow {
+        trySend(ResultState.Loading)
+
+
+
+        firebaseAuth.signInWithEmailAndPassword(studentData.email, studentData.password)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    trySend(ResultState.Success("User Logged In Successfully"))
+                } else {
+                    if (it.exception != null) {
+                        trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                    }
+                }
+            }
+
+
+
+        awaitClose {
+            close()
+        }
+    }
+
+    override fun getstudentbyid(uid: String): Flow<ResultState<StudentDataParent>> = callbackFlow {
+        trySend(ResultState.Loading)
+        firebaseFirestore.collection(Student_Collection)
+            .document(uid).get().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val data = it.result.toObject(StudentData::class.java)!!
+                    val studentdataParent = StudentDataParent(it.result.id, data)
+                    trySend(ResultState.Success(studentdataParent))
+                } else {
+                    if (it.exception != null) {
+                        trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                    }
+                }
+            }
+        awaitClose {
+            close()
+        }
+    }
+
 
 
     override fun userProfileImage(uri: Uri): Flow<ResultState<String>> = callbackFlow {

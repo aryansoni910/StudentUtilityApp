@@ -1,4 +1,5 @@
-package com.example.project_1.Presentation.Screen.TeacherScreen
+package com.example.project_1.Presentation.Screen.StudentScreen
+
 
 import android.net.Uri
 import android.widget.Toast
@@ -65,17 +66,17 @@ import kotlinx.serialization.json.JsonNull.content
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
+fun StudentProfileScreen(
     viewModel: Project1ViewModel = hiltViewModel(),
     firebaseAuth: FirebaseAuth,
     navController: NavController
 ) {
     LaunchedEffect(key1 = true) {
-        viewModel.getuserById(firebaseAuth.currentUser!!.uid)
+        viewModel.getStudentbyId(firebaseAuth.currentUser!!.uid)
 
     }
     val userProfileImageState = viewModel.userProfileImageState.collectAsStateWithLifecycle()
-    val profileScreenState = viewModel.profileStateScreen.collectAsStateWithLifecycle()
+    val studentProfileScreenState = viewModel.studentProfileScreenState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val isEdting = remember { mutableStateOf(true) }
 
@@ -86,14 +87,14 @@ fun ProfileScreen(
     val showDialog = remember { mutableStateOf(false) }
 
 
-    val firstName =
-        remember { mutableStateOf(profileScreenState.value.userData?.userData?.firstName ?: "") }
-    val lastName =
-        remember { mutableStateOf(profileScreenState.value.userData?.userData?.lastName ?: "") }
+    val name =
+        remember { mutableStateOf(studentProfileScreenState.value.studentdata?.studentData?.name ?: "") }
+    val enrollmentno =
+        remember { mutableStateOf(studentProfileScreenState.value.studentdata?.studentData?.enrollmentNumber ?: "") }
     val email =
-        remember { mutableStateOf(profileScreenState.value.userData?.userData?.email ?: "") }
-    val phoneNumber =
-        remember { mutableStateOf(profileScreenState.value.userData?.userData?.phoneNumber ?: "") }
+        remember { mutableStateOf(studentProfileScreenState.value.studentdata?.studentData?.email ?: "") }
+    val branch =
+        remember { mutableStateOf(studentProfileScreenState.value.studentdata?.studentData?.branch ?: "") }
 
 
     val pickMedia =
@@ -117,26 +118,26 @@ fun ProfileScreen(
 
 
 
-    LaunchedEffect(profileScreenState.value.userData) {
-        profileScreenState.value.userData?.userData?.let { userData ->
-            firstName.value = userData.firstName ?: ""
-            lastName.value = userData.lastName ?: ""
-            email.value = userData.email ?: ""
-            phoneNumber.value = userData.phoneNumber ?: ""
-            imageUrl.value = userData.profileImage ?: ""
+    LaunchedEffect(studentProfileScreenState.value.studentdata) {
+        studentProfileScreenState.value.studentdata?.studentData?.let { studentData ->
+            name.value = studentData.name ?: ""
+            enrollmentno.value = studentData.enrollmentNumber ?: ""
+            email.value = studentData.email ?: ""
+            branch.value = studentData.branch ?: ""
+            imageUrl.value = studentData.StudentImage ?: ""
         }
     }
 
 
 
-    if (profileScreenState.value.isLoading) {
+    if (studentProfileScreenState.value.isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
-    } else if (profileScreenState.value.error != null) {
-        Text(text = profileScreenState.value.error!!)
+    } else if (studentProfileScreenState.value.error != null) {
+        Text(text = studentProfileScreenState.value.error!!)
 
-    } else if (profileScreenState.value.userData != null) {
+    } else if (studentProfileScreenState.value.studentdata != null) {
 
         Scaffold(
             topBar = {
@@ -219,7 +220,7 @@ fun ProfileScreen(
 
 
                     OutlinedTextField(
-                        value = firstName.value,
+                        value = name.value,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 80.dp),
@@ -231,12 +232,12 @@ fun ProfileScreen(
                         readOnly = if (isEdting.value) false else true,
 
                         onValueChange = {
-                            firstName.value = it
+                            name.value = it
 
                         },
                         label = {
                             Text(
-                                "First Name", style = TextStyle(
+                                "Name", style = TextStyle(
                                     fontWeight = FontWeight.Bold
                                 )
                             )
@@ -247,20 +248,20 @@ fun ProfileScreen(
 
 
                     OutlinedTextField(
-                        value = lastName.value, modifier = Modifier.fillMaxWidth(),
+                        value = enrollmentno.value, modifier = Modifier.fillMaxWidth(),
 
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedBorderColor = Color(0xFFFCF7D3),
                             focusedBorderColor = Color(0xFFFCF7D3)
                         ), readOnly = if (isEdting.value) false else true,
                         onValueChange = {
-                            lastName.value = it
+                            enrollmentno.value = it
                         },
                         shape = RoundedCornerShape(10.dp),
 
                         label = {
                             Text(
-                                "Last Name", style = TextStyle(
+                                "Enrollment number", style = TextStyle(
                                     fontWeight = FontWeight.Bold
                                 )
                             )
@@ -294,7 +295,7 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.size(16.dp))
                     OutlinedTextField(
-                        value = phoneNumber.value,
+                        value = branch.value,
                         modifier = Modifier.fillMaxWidth(),
                         readOnly = if (isEdting.value) false else true,
                         colors = OutlinedTextFieldDefaults.colors(
@@ -303,11 +304,11 @@ fun ProfileScreen(
                         ),
                         shape = RoundedCornerShape(10.dp),
                         onValueChange = {
-                            phoneNumber.value = it
+                            branch.value = it
                         },
                         label = {
                             Text(
-                                "Phone Number", style = TextStyle(
+                                "Branch", style = TextStyle(
                                     fontWeight = FontWeight.Bold
                                 )
                             )
@@ -319,8 +320,8 @@ fun ProfileScreen(
                     OutlinedButton(
                         onClick = {
                             firebaseAuth.signOut()
-                            navController.navigate(Routes.LoginScreen) {
-                                popUpTo(Routes.LoginScreen) { inclusive = true }
+                            navController.navigate(Routes.StudentLogin) {
+                                popUpTo(Routes.StudentLogin) { inclusive = true }
                             }
                         },
                         modifier = Modifier

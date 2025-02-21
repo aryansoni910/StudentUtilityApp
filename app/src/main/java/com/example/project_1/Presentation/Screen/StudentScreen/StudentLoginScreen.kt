@@ -1,4 +1,5 @@
-package com.example.project_1.Presentation.Screen.TeacherScreen
+package com.example.project_1.Presentation.Screen.StudentScreen
+
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -41,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Presentation.Navigation.Routes
 import com.example.project_1.Presentation.ViewModel.Project1ViewModel
@@ -48,13 +50,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable
-fun Login(viewModel: Project1ViewModel = hiltViewModel(), navController: NavController) {
+fun StudentLoginScreen(viewModel: Project1ViewModel = hiltViewModel(), navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val context = LocalContext.current
 
 
-    val state = viewModel.loginScreenState.collectAsState()
+    val state = viewModel.studentStateScreen.collectAsState()
     if (state.value.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
@@ -63,8 +65,8 @@ fun Login(viewModel: Project1ViewModel = hiltViewModel(), navController: NavCont
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(text = state.value.error.toString())
         }
-    } else if (state.value.userData != null) {
-        navController.navigate(Routes.TeacherHomeScreen)
+    } else if (state.value.studentData != null) {
+        navController.navigate(Routes.StudentHomeScreen)
 
     } else {
 
@@ -119,19 +121,16 @@ fun Login(viewModel: Project1ViewModel = hiltViewModel(), navController: NavCont
                     if (
                         email.value.isNotBlank() && password.value.isNotBlank()
                     ) {
-                        if (email.value.endsWith("gmail.com")) {
-                            val userData = UserData(
-                                firstName = "",
-                                lastName = "",
+                        if (email.value.endsWith("ggits.net")) {
+                            val studentdata = StudentData(
                                 email = email.value,
-                                password = password.value,
-                                phoneNumber = ""
+                                password = password.value
                             )
-                            viewModel.login(userData)
+                            viewModel.Studentlogin(studentdata)
                         } else {
                             Toast.makeText(
                                 context,
-                                "Please use a valid email address ending with 'gmail.com'",
+                                "Please use a valid email address ending with 'ggits.net'",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -150,17 +149,7 @@ fun Login(viewModel: Project1ViewModel = hiltViewModel(), navController: NavCont
             ) {
                 Text(text = "Sign in")
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text("Create account?")
-                TextButton(onClick = {
-                    navController.navigate(Routes.SingUpScreen)
-                }) {
-                    Text("Sign Up", color = Color.Blue)
-                }
-            }
+
 
         }
     }

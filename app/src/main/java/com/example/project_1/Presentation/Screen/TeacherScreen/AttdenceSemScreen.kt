@@ -29,7 +29,7 @@ import com.example.project_1.Presentation.Navigation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun markssem(navController: NavController) {
+fun AttdenceSemScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -138,7 +138,7 @@ fun markssem(navController: NavController) {
                         modifier = Modifier
                             .padding(top = 20.dp, start = 20.dp)
                             .size(height = 150.dp, width = 160.dp)
-                            .clickable { navController.navigate(Routes.Marks5) },
+                            .clickable { navController.navigate(Routes.AttendanceScreen) },
                         colors = CardDefaults.cardColors(
                             Color(0xFFB9F8F1)
                         )
@@ -205,7 +205,7 @@ fun markssem(navController: NavController) {
                     }
                 }
             }
-}
+        }
     )
 
 }

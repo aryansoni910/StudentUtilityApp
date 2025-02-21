@@ -82,7 +82,7 @@ fun Choice(navController: NavController) {
                 .padding(top = 100.dp, start = 53.dp)
                 .background(Color.LightGray)
                 .size(width = 280.dp, height = 240.dp)
-                .clickable {
+                .clickable {navController.navigate(Routes.StudentLogin)
                 },
             elevation = CardDefaults.cardElevation(15.dp)
         ) {

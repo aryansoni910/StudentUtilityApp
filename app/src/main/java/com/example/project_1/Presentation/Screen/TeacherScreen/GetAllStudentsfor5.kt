@@ -50,15 +50,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.layout.ContentScale
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Presentation.ViewModel.Project1ViewModel
 import com.example.project_1.Domain.Model.Subject
 import com.example.project_1.Domain.Model.SubjectDataParent
+import com.example.project_1.Presentation.Navigation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GetAllStudentsfor5(
     viewModel: Project1ViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.getAllStudents5()
@@ -72,139 +75,163 @@ fun GetAllStudentsfor5(
     var score by remember { mutableStateOf(0) }
     var showDialog by remember { mutableStateOf(false) }
 
-    if (addmarksstate.value.isLoading) {
+
+
+    if (Studentstate.value.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
-    } else if (addmarksstate.value.error.toString().isNullOrBlank()) {
+    } else if (Studentstate.value.error.toString().isNullOrBlank()) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = addmarksstate.value.error.toString())
+            Text(text = Studentstate.value.error.toString())
         }
-    } else if (addmarksstate.value.addmarks != null) {
-        // Navigate or perform actions when marks are added
     } else {
-        Scaffold(
-            topBar = {
-                IconButton(
-                    onClick = { /* Navigate back */ },
-                    modifier = Modifier
-                        .size(50.dp)
-                        .padding(top = 10.dp)
-                        .background(Color(0xFF7DCAEE))
-                ) {
-                    Icon(
-                        Icons.Default.ArrowBack,
-                        contentDescription = null
-                    )
-                }
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Marks",
-                            style = TextStyle(
-                                fontSize = 50.sp,
-                                fontWeight = FontWeight.Bold
-                            ), modifier = Modifier.padding(start = 100.dp)
+        if (addmarksstate.value.isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else if (addmarksstate.value.error.toString().isNullOrBlank()) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = addmarksstate.value.error.toString())
+            }
+//    } else if (addmarksstate.value.addmarks != null) {
+//        // Navigate or perform actions when marks are added
+//        navController.navigate(Routes.Marks5)
+        } else {
+            Scaffold(
+                topBar = {
+                    IconButton(
+                        onClick = { /* Navigate back */ },
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(top = 10.dp)
+                            .background(Color(0xFF7DCAEE))
+                    ) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = null
                         )
-                    },
-                    colors = TopAppBarDefaults.largeTopAppBarColors(
-                        containerColor = Color(0xFFF8EE95) // Custom color for the TopAppBar background
+                    }
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Marks",
+                                style = TextStyle(
+                                    fontSize = 50.sp,
+                                    fontWeight = FontWeight.Bold
+                                ), modifier = Modifier.padding(start = 100.dp)
+                            )
+                        },
+                        colors = TopAppBarDefaults.largeTopAppBarColors(
+                            containerColor = Color(0xFFF8EE95) // Custom color for the TopAppBar background
+                        )
                     )
-                )
-            },
+                },
 
-            content = { innerpadding ->
+                content = { innerpadding ->
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 100.dp)
-                        .background(Color(0xFFF5F0C8))
-                ) {
-                    items(Studentstate.value.getallstudent) { student ->
-                        StudentItem(
-                            studentData = student,
-                            onStudentSelected = {
-                                selectedStudentId = student.email  // Using student email as unique ID
-                                showDialog = true
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 120.dp)
+                            .background(Color(0xFFF5F0C8))
+                    ) {
+                        items(Studentstate.value.getallstudent) { student ->
+                            StudentItem(
+                                studentData = student,
+                                onStudentSelected = {
+                                    selectedStudentId =
+                                        student.email  // Using student email as unique ID
+                                    showDialog = true
+                                }
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Show dialog when selectedStudentId is not empty
+                    if (showDialog && selectedStudentId.isNotEmpty()) {
+                        AlertDialog(
+                            onDismissRequest = { showDialog = false },
+                            title = { Text("Add Marks with SubjectName") },
+                            text = {
+                                Column(modifier = Modifier.padding(top = 100.dp)) {
+                                    Text(text = "Add Marks to Student: $selectedStudentId")
+                                    OutlinedTextField(
+                                        value = subjectName,
+                                        onValueChange = { subjectName = it },
+                                        label = { Text("Subject Name") }
+                                    )
+                                    OutlinedTextField(
+                                        value = score.toString(),
+                                        onValueChange = { score = it.toIntOrNull() ?: 0 },
+                                        label = { Text("Score") },
+                                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                                    )
+                                }
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        // Prepare SubjectDataParent to add marks
+                                        val subjectMarks = Subject(subjectName, score)
+
+                                        // Create SubjectDataParent with unique nodeId (student's email)
+                                        val studentDataParent = SubjectDataParent(
+                                            nodeId = selectedStudentId,
+                                            subject = subjectMarks
+                                        )
+
+                                        // Call the viewModel to add marks to Firestore
+                                        viewModel.addMarks(studentDataParent)
+
+                                        // Reset and close the dialog
+                                        subjectName = ""
+                                        score = 0
+                                        showDialog = false
+
+                                        navController.popBackStack()
+                                        navController.navigate(Routes.Marks5)
+                                    }
+                                ) {
+                                    Text("Confirm")
+                                }
+                            },
+                            dismissButton = {
+                                Button(onClick = { showDialog = false }) {
+                                    Text("Cancel")
+                                }
                             }
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Show dialog when selectedStudentId is not empty
-                if (showDialog && selectedStudentId.isNotEmpty()) {
-                    AlertDialog(
-                        onDismissRequest = { showDialog = false },
-                        title = { Text("Add Marks with SubjectName") },
-                        text = {
-                            Column(modifier = Modifier.padding(top = 100.dp)) {
-                                Text(text = "Add Marks to Student: $selectedStudentId")
-                                OutlinedTextField(
-                                    value = subjectName,
-                                    onValueChange = { subjectName = it },
-                                    label = { Text("Subject Name") }
-                                )
-                                OutlinedTextField(
-                                    value = score.toString(),
-                                    onValueChange = { score = it.toIntOrNull() ?: 0 },
-                                    label = { Text("Score") },
-                                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-                                )
-                            }
-                        },
-                        confirmButton = {
-                            Button(
-                                onClick = {
-                                    // Prepare SubjectDataParent to add marks
-                                    val subjectMarks = Subject(subjectName, score)
-
-                                    // Create SubjectDataParent with unique nodeId (student's email)
-                                    val studentDataParent = SubjectDataParent(nodeId = selectedStudentId, subject = subjectMarks)
-
-                                    // Call the viewModel to add marks to Firestore
-                                    viewModel.addMarks(studentDataParent)
-
-                                    // Reset and close the dialog
-                                    subjectName = ""
-                                    score = 0
-                                    showDialog = false
-                                }
-                            ) {
-                                Text("Confirm")
-                            }
-                        },
-                        dismissButton = {
-                            Button(onClick = { showDialog = false }) {
-                                Text("Cancel")
-                            }
-                        }
-                    )
-                }
-            }
-        )
+            )
+        }
     }
 }
+
 @Composable
 fun StudentItem(studentData: StudentData, onStudentSelected: (String) -> Unit) {
     // Card for each student item
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),  // Optional elevation to give depth to the card
+            .padding(8.dp)
+            .size(height = 70.dp, width = 400.dp)
+            .clickable { onStudentSelected(studentData.email) },  // Optional elevation to give depth to the card
         shape = RoundedCornerShape(8.dp), // Rounded corners for a modern look
     ) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
-                .clickable { onStudentSelected(studentData.email) }  // Trigger the click to open the dialog
+                // Trigger the click to open the dialog
                 .fillMaxWidth()
         ) {
             // Display student's name
             Text(
                 text = studentData.name,
-                style = MaterialTheme.typography.bodyMedium, // Text style
+                style = MaterialTheme.typography.bodyMedium,
+                // Text style
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f) // Make name take up available space
             )

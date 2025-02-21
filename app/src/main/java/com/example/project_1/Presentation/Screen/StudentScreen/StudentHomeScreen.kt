@@ -1,4 +1,5 @@
-package com.example.project_1.Presentation.Screen.TeacherScreen
+package com.example.project_1.Presentation.Screen.StudentScreen
+
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,22 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.rounded.Menu
+
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -36,23 +31,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.project_1.Presentation.Navigation.Routes
-import com.example.project_1.Presentation.ViewModel.Project1ViewModel
 import com.example.project_1.R
-import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeacherHomeScreen(navController: NavController) {
+fun StudentHomeScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
+                    Image(
+                        painter = painterResource(id = R.drawable.newspaperfolded),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(35.dp)
+                            .clickable { })
                     Text(
-                        text = "Teacher Dashboard",
+                        text = "Student Dashboard",
                         style = TextStyle(
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Bold
-                        ), modifier = Modifier.padding(start = 40.dp)
+                        ), modifier = Modifier.padding(start = 50.dp)
                     )
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
@@ -78,7 +77,7 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 15.dp)
-                            .clickable { navController.navigate(Routes.AttendanceSem) }
+                            .clickable { }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.attendance),
@@ -101,7 +100,7 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 10.dp)
-                            .clickable { navController.navigate(Routes.Sem)}
+                            .clickable { }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.marks),
@@ -127,7 +126,7 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 15.dp)
-                            .clickable { navController.navigate(Routes.GatePass) }
+                            .clickable { }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.gatepass),
@@ -150,10 +149,10 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 10.dp)
-                            .clickable { navController.navigate(Routes.AddStudent) }
+                            .clickable { }
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.friend),
+                            painter = painterResource(id = R.drawable.customer),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(height = 120.dp, width = 120.dp)
@@ -161,11 +160,11 @@ fun TeacherHomeScreen(navController: NavController) {
                                 .padding(top = 10.dp)
                         )
                         Text(
-                            text = "AddStudent", style = TextStyle(
+                            text = "Services", style = TextStyle(
                                 fontSize = 30.sp,
                                 fontStyle = FontStyle.Normal,
                                 fontWeight = FontWeight.Bold
-                            ), modifier = Modifier.padding(top = 20.dp, start = 5.dp)
+                            ), modifier = Modifier.padding(top = 20.dp, start = 27.dp)
                         )
                     }
                 }
@@ -175,9 +174,7 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 15.dp)
-                            .clickable {
-                                navController.navigate(Routes.YourProfile)
-                            }
+                            .clickable {navController.navigate(Routes.StudentProfileScreen)}
                     ) {
                         Image(
                             painter = painterResource(R.drawable.student),
@@ -200,7 +197,7 @@ fun TeacherHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 10.dp)
-                            .clickable { navController.navigate(Routes.Help) }
+                            .clickable {navController.navigate(Routes.Help) }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.help),

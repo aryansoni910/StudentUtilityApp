@@ -17,7 +17,9 @@ import androidx.navigation.NavController
 import com.example.project_1.Presentation.Navigation.App
 import com.example.project_1.Presentation.Navigation.Routes
 import com.example.project_1.Presentation.Screen.GetStarted
+import com.example.project_1.Presentation.Screen.StudentScreen.StudentHomeScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.AddStudentScreen
+import com.example.project_1.Presentation.Screen.TeacherScreen.AttendanceMarkScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.ChatBox
 import com.example.project_1.Presentation.Screen.TeacherScreen.GetAllStudentsfor5
 import com.example.project_1.Presentation.Screen.TeacherScreen.Login
@@ -42,7 +44,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             Project_1Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-              GetAllStudentsfor5()
+                App()
                 }
             }
-        }}}
+        }
+    }
+}

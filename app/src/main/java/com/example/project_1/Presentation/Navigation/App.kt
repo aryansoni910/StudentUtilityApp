@@ -10,9 +10,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.project_1.Presentation.Screen.GetStarted
+import com.example.project_1.Presentation.Screen.StudentScreen.StudentHomeScreen
+import com.example.project_1.Presentation.Screen.StudentScreen.StudentLoginScreen
+import com.example.project_1.Presentation.Screen.StudentScreen.StudentProfileScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.AddStudentScreen
+import com.example.project_1.Presentation.Screen.TeacherScreen.AttdenceSemScreen
+import com.example.project_1.Presentation.Screen.TeacherScreen.AttendanceMarkScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.ChatBox
 import com.example.project_1.Presentation.Screen.TeacherScreen.GatePassScreen
+import com.example.project_1.Presentation.Screen.TeacherScreen.GetAllStudentsfor5
+import com.example.project_1.Presentation.Screen.TeacherScreen.LoadingScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.Login
 import com.example.project_1.Presentation.Screen.TeacherScreen.ProfileScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.SingUpScreenUi
@@ -21,9 +28,11 @@ import com.example.project_1.Presentation.Screen.TeacherScreen.markssem
 import com.example.project_1.Presentation.ViewModel.Project1ViewModel
 import com.google.firebase.auth.FirebaseAuth
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun App() {
+
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Routes.getstarted) {
@@ -64,7 +73,35 @@ fun App() {
             ChatBox()
         }
         composable<Routes.Sem> {
-            markssem()
+            markssem(navController)
+        }
+        composable<Routes.Marks5> {
+            GetAllStudentsfor5(navController = navController)
+        }
+        composable<Routes.LoadingScreen> {
+            LoadingScreen()
+        }
+
+        composable<Routes.AttendanceSem> {
+            AttdenceSemScreen(navController)
+        }
+
+        composable<Routes.AttendanceScreen> {
+            AttendanceMarkScreen(
+                navController = navController
+            )
+        }
+
+        composable<Routes.StudentLogin> {
+            StudentLoginScreen(navController = navController)
+        }
+
+        composable<Routes.StudentHomeScreen> {
+            StudentHomeScreen(navController)
+        }
+
+        composable<Routes.StudentProfileScreen> {
+            StudentProfileScreen(firebaseAuth = FirebaseAuth.getInstance(), navController = navController)
         }
     }
 
