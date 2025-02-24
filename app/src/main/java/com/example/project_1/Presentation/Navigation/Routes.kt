@@ -55,4 +55,13 @@ import kotlinx.serialization.Serializable
 
         @Serializable
         object StudentProfileScreen
+
+        @Serializable
+        object StudentmarksScreen
+
+        @Serializable
+        object Studentattendancescreen
+
+        @Serializable
+        object StudentNewsScreen
    }

@@ -45,7 +45,7 @@ fun StudentHomeScreen(navController: NavController) {
                         contentDescription = null,
                         modifier = Modifier
                             .size(35.dp)
-                            .clickable { })
+                            .clickable { navController.navigate(Routes.StudentNewsScreen)})
                     Text(
                         text = "Student Dashboard",
                         style = TextStyle(
@@ -77,7 +77,7 @@ fun StudentHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 15.dp)
-                            .clickable { }
+                            .clickable { navController.navigate(Routes.Studentattendancescreen)}
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.attendance),
@@ -100,7 +100,7 @@ fun StudentHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 10.dp)
-                            .clickable { }
+                            .clickable { navController.navigate(Routes.StudentmarksScreen)}
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.marks),

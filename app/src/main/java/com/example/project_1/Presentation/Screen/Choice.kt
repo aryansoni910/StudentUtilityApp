@@ -2,6 +2,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
@@ -42,12 +43,12 @@ fun Choice(navController: NavController) {
         Card(
             modifier = Modifier
                 .padding(top = 150.dp, start = 53.dp)
-                .background(Color.White)
                 .size(width = 280.dp, height = 240.dp)
                 .clickable {
                     navController.navigate(Routes.SingUpScreen)
                 },
-            elevation = CardDefaults.cardElevation(15.dp)
+            elevation = CardDefaults.cardElevation(15.dp),
+            shape = RoundedCornerShape(20.dp)
 
         )
 
@@ -80,11 +81,11 @@ fun Choice(navController: NavController) {
         Card(
             modifier = Modifier
                 .padding(top = 100.dp, start = 53.dp)
-                .background(Color.LightGray)
                 .size(width = 280.dp, height = 240.dp)
                 .clickable {navController.navigate(Routes.StudentLogin)
                 },
-            elevation = CardDefaults.cardElevation(15.dp)
+            elevation = CardDefaults.cardElevation(15.dp),
+            shape = RoundedCornerShape(20.dp)
         ) {
             Column(modifier = Modifier.padding(top = 5.dp)) {
                 Image(

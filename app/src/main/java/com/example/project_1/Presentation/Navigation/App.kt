@@ -10,8 +10,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.project_1.Presentation.Screen.GetStarted
+import com.example.project_1.Presentation.Screen.StudentScreen.StudentAttendanceScreen
 import com.example.project_1.Presentation.Screen.StudentScreen.StudentHomeScreen
 import com.example.project_1.Presentation.Screen.StudentScreen.StudentLoginScreen
+import com.example.project_1.Presentation.Screen.StudentScreen.StudentMarksScreen
+import com.example.project_1.Presentation.Screen.StudentScreen.StudentNewsScreen
 import com.example.project_1.Presentation.Screen.StudentScreen.StudentProfileScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.AddStudentScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.AttdenceSemScreen
@@ -102,6 +105,18 @@ fun App() {
 
         composable<Routes.StudentProfileScreen> {
             StudentProfileScreen(firebaseAuth = FirebaseAuth.getInstance(), navController = navController)
+        }
+
+        composable<Routes.StudentmarksScreen> {
+           StudentMarksScreen (firebaseAuth = FirebaseAuth.getInstance(), navController = navController)
+        }
+
+        composable<Routes.Studentattendancescreen> {
+            StudentAttendanceScreen(firebaseAuth = FirebaseAuth.getInstance(), navController = navController)
+        }
+
+        composable<Routes.StudentNewsScreen> {
+            StudentNewsScreen()
         }
     }
 

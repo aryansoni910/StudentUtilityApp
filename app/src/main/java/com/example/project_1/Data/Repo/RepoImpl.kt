@@ -6,28 +6,26 @@ import com.example.project_1.Common.Gate_Pass
 import com.example.project_1.Common.ResultState
 import com.example.project_1.Common.Student_Collection
 import com.example.project_1.Common.User_Collection
-import com.example.project_1.Domain.Model.Attendance
+import com.example.project_1.Data.Network.Apiprovider
+import com.example.project_1.Data.Network.StudentModel
 import com.example.project_1.Domain.Model.AttendanceDataParent
 import com.example.project_1.Domain.Model.GatePassdata
 import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Domain.Model.StudentDataParent
-import com.example.project_1.Domain.Model.Subject
 import com.example.project_1.Domain.Model.SubjectDataParent
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
 import com.example.project_1.Domain.Repo.Repo
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import retrofit2.Response
 import java.util.UUID
 import javax.inject.Inject
-import kotlin.math.log
 
 class RepoImpl @Inject constructor(
     var firebaseAuth: FirebaseAuth,
@@ -229,6 +227,31 @@ class RepoImpl @Inject constructor(
         }
     }
 
+    override fun getmarksbyid(uid: String): Flow<ResultState<StudentDataParent>> = callbackFlow {
+        trySend(ResultState.Loading)
+
+        firebaseFirestore.collection(Student_Collection)
+            .document(uid).get().addOnCompleteListener{
+                if(it.isSuccessful){
+                    val data = it.result.toObject(StudentData::class.java)!!
+                    val studentDataParent = StudentDataParent(it.result.id,data)
+
+                    trySend(ResultState.Success(studentDataParent))
+                }
+                else{
+                    if(it.exception!= null){
+                        trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                    }
+                }
+            }
+        awaitClose{
+            close()
+        }
+    }
+
+    override suspend fun newProvider(): Response<StudentModel> {
+        return Apiprovider.provideApi().getNewsFromServer()
+    }
 
 
     override fun userProfileImage(uri: Uri): Flow<ResultState<String>> = callbackFlow {
@@ -249,6 +272,7 @@ class RepoImpl @Inject constructor(
 
 
     }
+    
 
     override fun StudentregisterUserWithEmailAndPassword(studentData: StudentData): Flow<ResultState<String>> =
         callbackFlow {

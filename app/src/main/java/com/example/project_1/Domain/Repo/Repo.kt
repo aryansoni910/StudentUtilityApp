@@ -2,6 +2,7 @@ package com.example.project_1.Domain.Repo
 
 import android.net.Uri
 import com.example.project_1.Common.ResultState
+import com.example.project_1.Data.Network.StudentModel
 import com.example.project_1.Domain.Model.Attendance
 import com.example.project_1.Domain.Model.AttendanceDataParent
 import com.example.project_1.Domain.Model.GatePassdata
@@ -12,6 +13,7 @@ import com.example.project_1.Domain.Model.SubjectDataParent
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
 interface Repo  {
     fun LoginWithEmailAndPassword(userData: UserData): Flow<ResultState<String>>
@@ -25,4 +27,6 @@ interface Repo  {
     fun addattendance(attendanceDataParent: AttendanceDataParent):Flow<ResultState<StudentData>>
     fun StudentLoginWithEmailAndPassword(studentData: StudentData): Flow<ResultState<String>>
     fun getstudentbyid(uid: String):Flow<ResultState<StudentDataParent>>
+    fun getmarksbyid(uid: String):Flow<ResultState<StudentDataParent>>
+    suspend fun newProvider(): Response<StudentModel>
 }

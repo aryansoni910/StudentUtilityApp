@@ -2,20 +2,23 @@ package com.example.project_1.Presentation.ViewModel
 
 import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project_1.Common.ApiKey
 import com.example.project_1.Common.ResultState
+import com.example.project_1.Data.Network.StudentModel
+import com.example.project_1.Data.Repo.RepoImpl
 import com.example.project_1.Domain.Model.AttendanceDataParent
 import com.example.project_1.Domain.Model.ChatBotEnum
 import com.example.project_1.Domain.Model.GatePassdata
 import com.example.project_1.Domain.Model.StudentData
 import com.example.project_1.Domain.Model.StudentDataParent
-import com.example.project_1.Domain.Model.Subject
 import com.example.project_1.Domain.Model.SubjectDataParent
 import com.example.project_1.Domain.Model.UserData
 import com.example.project_1.Domain.Model.UserDataParent
 import com.example.project_1.Domain.Model.chatbotData
+import com.example.project_1.Domain.Repo.Repo
 import com.example.project_1.Domain.UseCase.AddAtendanceUseCase
 import com.example.project_1.Domain.UseCase.AddMarks5UseCase
 import com.example.project_1.Domain.UseCase.AddStudentUseCase
@@ -25,6 +28,7 @@ import com.example.project_1.Domain.UseCase.LoginUserUseCase
 import com.example.project_1.Domain.UseCase.ProfileScreenUsecase
 import com.example.project_1.Domain.UseCase.SignUPUseCase
 import com.example.project_1.Domain.UseCase.StudentLoginUsecase
+import com.example.project_1.Domain.UseCase.StudentMarksUseCase
 import com.example.project_1.Domain.UseCase.StudentProfileScreenUseCase
 import com.example.project_1.Domain.UseCase.UserProfileImageUseCase
 import com.google.ai.client.generativeai.GenerativeModel
@@ -47,7 +51,9 @@ class Project1ViewModel @Inject constructor(
     private val addMarks5UseCase: AddMarks5UseCase,
     private val addAtendanceUseCase: AddAtendanceUseCase,
     private val studentLoginUsecase: StudentLoginUsecase,
-    private val studentProfileScreenUseCase: StudentProfileScreenUseCase
+    private val studentMarksUseCase: StudentMarksUseCase,
+    private val studentProfileScreenUseCase: StudentProfileScreenUseCase,
+    private val repo: Repo
 ) : ViewModel() {
     private val _loginScreenState = MutableStateFlow(LoginScreenState())
     val loginScreenState = _loginScreenState.asStateFlow()
@@ -77,11 +83,29 @@ class Project1ViewModel @Inject constructor(
     val addAttendanceScreenState = _addAttendanceScreenState.asStateFlow()
 
     private val _studentLoginStateScreen = MutableStateFlow(StudentLoginScreenState())
-    val studentStateScreen =  _studentLoginStateScreen.asStateFlow()
+    val studentStateScreen = _studentLoginStateScreen.asStateFlow()
 
 
     private val _studentProfileScreenState = MutableStateFlow(StudentProfileScreenState())
     val studentProfileScreenState = _studentProfileScreenState.asStateFlow()
+
+    private val _studentMarksScreenState = MutableStateFlow((StudentMarksScreenState()))
+    val studentMarksScreenState = _studentMarksScreenState.asStateFlow()
+
+
+    val res = mutableStateOf<StudentModel?>(null)
+
+    init {
+        viewModelScope.launch {
+            res.value = getNews(
+                repo
+            )
+        }
+    }
+
+    suspend fun getNews(repo: Repo): StudentModel?{
+        return repo.newProvider().body()
+    }
 
     private val genAI by lazy {
         GenerativeModel(
@@ -124,7 +148,6 @@ class Project1ViewModel @Inject constructor(
     }
 
 
-
     fun addMarks(studentDataParent: SubjectDataParent) {
         viewModelScope.launch {
             addMarks5UseCase.addMarks(studentDataParent).collect {
@@ -148,18 +171,22 @@ class Project1ViewModel @Inject constructor(
         }
     }
 
-      fun addAttendance(attendanceDataParent: AttendanceDataParent){
-          viewModelScope.launch {
-              addAtendanceUseCase.addAttendance(attendanceDataParent).collect{
-                  when(it){
-                      is ResultState.Error -> _addAttendanceScreenState.value = AddAttenedanceScreenState(error = it.message)
-                      ResultState.Loading -> _addAttendanceScreenState.value = AddAttenedanceScreenState(isLoading = true)
+    fun addAttendance(attendanceDataParent: AttendanceDataParent) {
+        viewModelScope.launch {
+            addAtendanceUseCase.addAttendance(attendanceDataParent).collect {
+                when (it) {
+                    is ResultState.Error -> _addAttendanceScreenState.value =
+                        AddAttenedanceScreenState(error = it.message)
 
-                      is ResultState.Success -> _addAttendanceScreenState.value = AddAttenedanceScreenState(addattendance = it.data.toString())
-                  }
-              }
-          }
-      }
+                    ResultState.Loading -> _addAttendanceScreenState.value =
+                        AddAttenedanceScreenState(isLoading = true)
+
+                    is ResultState.Success -> _addAttendanceScreenState.value =
+                        AddAttenedanceScreenState(addattendance = it.data.toString())
+                }
+            }
+        }
+    }
 
     fun login(userData: UserData) {
         viewModelScope.launch {
@@ -273,6 +300,37 @@ class Project1ViewModel @Inject constructor(
                         _studentProfileScreenState.value = _studentProfileScreenState.value.copy(
                             isLoading = false,
                             studentdata = it.data
+                        )
+                    }
+                }
+
+            }
+        }
+    }
+
+
+    fun getStudentmarksbyId(uid: String) {
+        viewModelScope.launch {
+            studentMarksUseCase.StudentMarks(uid).collect {
+                when (it) {
+                    is ResultState.Error -> {
+                        _studentMarksScreenState.value = _studentMarksScreenState.value.copy(
+                            isLoading = false,
+                            error = it.message
+                        )
+
+                    }
+
+                    ResultState.Loading -> {
+                        _studentMarksScreenState.value = _studentMarksScreenState.value.copy(
+                            isLoading = true
+                        )
+                    }
+
+                    is ResultState.Success -> {
+                        _studentMarksScreenState.value = _studentMarksScreenState.value.copy(
+                            isLoading = false,
+                            studentmarks = it.data
                         )
                     }
                 }
@@ -419,3 +477,10 @@ data class StudentProfileScreenState(
     val error: String? = null,
     val studentdata: StudentDataParent? = null
 )
+
+data class StudentMarksScreenState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val studentmarks: StudentDataParent? = null
+)
+

@@ -33,11 +33,11 @@ data class AttendanceDataParent(
 )
 
 data class SubjectDataParent(
-    val nodeId : String = "",
-    val subject: com.example.project_1.Domain.Model.Subject
+    val nodeId: String = "",
+    val subject: Subject
 )
 
 data class StudentDataParent(
-    val nodeId: String ,
+    val nodeId: String,
     val studentData: StudentData
 )
