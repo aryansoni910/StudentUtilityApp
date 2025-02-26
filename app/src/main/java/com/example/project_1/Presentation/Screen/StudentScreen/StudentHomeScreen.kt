@@ -149,7 +149,7 @@ fun StudentHomeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
                             .padding(start = 10.dp)
-                            .clickable { }
+                            .clickable {navController.navigate(Routes.StudentServicesScreen) }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.customer),

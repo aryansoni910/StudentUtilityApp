@@ -64,4 +64,7 @@ import kotlinx.serialization.Serializable
 
         @Serializable
         object StudentNewsScreen
+
+        @Serializable
+        object StudentServicesScreen
    }

@@ -1,5 +1,9 @@
 package com.example.project_1.Presentation.ViewModel
 
+import android.annotation.SuppressLint
+import android.app.Application
+import android.health.connect.datatypes.ExerciseRoute
+import android.location.Location
 import android.net.Uri
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +37,13 @@ import com.example.project_1.Domain.UseCase.StudentProfileScreenUseCase
 import com.example.project_1.Domain.UseCase.UserProfileImageUseCase
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.Task
+import com.google.maps.android.compose.CameraPositionState
+import com.google.maps.android.compose.MarkerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,7 +64,8 @@ class Project1ViewModel @Inject constructor(
     private val studentLoginUsecase: StudentLoginUsecase,
     private val studentMarksUseCase: StudentMarksUseCase,
     private val studentProfileScreenUseCase: StudentProfileScreenUseCase,
-    private val repo: Repo
+    private val repo: Repo,
+    private val application: Application
 ) : ViewModel() {
     private val _loginScreenState = MutableStateFlow(LoginScreenState())
     val loginScreenState = _loginScreenState.asStateFlow()
@@ -92,8 +104,13 @@ class Project1ViewModel @Inject constructor(
     private val _studentMarksScreenState = MutableStateFlow((StudentMarksScreenState()))
     val studentMarksScreenState = _studentMarksScreenState.asStateFlow()
 
+    private val fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(application)
+
+
 
     val res = mutableStateOf<StudentModel?>(null)
+
 
     init {
         viewModelScope.launch {
@@ -101,10 +118,6 @@ class Project1ViewModel @Inject constructor(
                 repo
             )
         }
-    }
-
-    suspend fun getNews(repo: Repo): StudentModel?{
-        return repo.newProvider().body()
     }
 
     private val genAI by lazy {
@@ -117,6 +130,17 @@ class Project1ViewModel @Inject constructor(
         mutableStateListOf<chatbotData>()
     }
 
+
+
+
+    suspend fun getNews(repo: Repo): StudentModel?{
+        return repo.newProvider().body()
+    }
+
+
+
+
+
     fun sendMessage(message: String) = viewModelScope.launch {
         val chat = genAI.startChat()
 
@@ -128,6 +152,8 @@ class Project1ViewModel @Inject constructor(
             list.add(chatbotData(it, ChatBotEnum.Model.role))
         }
     }
+
+
 
     fun Studentlogin(studentData: StudentData) {
         viewModelScope.launch {

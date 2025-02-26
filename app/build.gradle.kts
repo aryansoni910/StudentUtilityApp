@@ -30,6 +30,7 @@ android {
                 "proguard-rules.pro"
             )
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -87,4 +88,6 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
+    implementation ("com.google.maps.android:maps-compose:2.8.0")
 }

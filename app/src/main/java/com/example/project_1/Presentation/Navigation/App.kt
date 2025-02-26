@@ -16,6 +16,7 @@ import com.example.project_1.Presentation.Screen.StudentScreen.StudentLoginScree
 import com.example.project_1.Presentation.Screen.StudentScreen.StudentMarksScreen
 import com.example.project_1.Presentation.Screen.StudentScreen.StudentNewsScreen
 import com.example.project_1.Presentation.Screen.StudentScreen.StudentProfileScreen
+import com.example.project_1.Presentation.Screen.StudentScreen.StudentServicesScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.AddStudentScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.AttdenceSemScreen
 import com.example.project_1.Presentation.Screen.TeacherScreen.AttendanceMarkScreen
@@ -117,6 +118,9 @@ fun App() {
 
         composable<Routes.StudentNewsScreen> {
             StudentNewsScreen()
+        }
+        composable<Routes.StudentServicesScreen> {
+            StudentServicesScreen()
         }
     }
 

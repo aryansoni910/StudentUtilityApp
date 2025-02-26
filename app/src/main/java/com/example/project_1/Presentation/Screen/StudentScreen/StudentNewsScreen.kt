@@ -1,5 +1,6 @@
 package com.example.project_1.Presentation.Screen.StudentScreen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +33,7 @@ fun StudentNewsScreen(modifier: Modifier = Modifier, viewModel:Project1ViewModel
 
     // If newsState is null or has no articles, show a loading or empty state
     if (newsState == null || newsState.articles.isEmpty()) {
-        Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             CircularProgressIndicator(modifier = Modifier.padding(16.dp))
             Text("Loading news...", style = MaterialTheme.typography.bodyLarge)
         }
