@@ -2,8 +2,10 @@ package com.example.project_1.Presentation.Screen.TeacherScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,33 +38,34 @@ fun AttdenceSemScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Semesters",
+                        text = "Semesters", color = Color.Black,
                         style = TextStyle(
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold
-                        ), modifier = Modifier.padding(start = 120.dp)
+                            fontWeight = FontWeight.Bold,
+                            fontStyle = FontStyle.Italic
+                        ), modifier = Modifier.padding(10.dp)
                     )
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = Color(0xFFFAEB69) // Custom color for the TopAppBar background
+                    containerColor = Color(0xFFE3B1FD) // Custom color for the TopAppBar background
                 )
 
             )
         },
         content = { innerpadding ->
+            Box(modifier = Modifier.fillMaxSize()){
 
             Column(modifier = Modifier.fillMaxSize()
                 .padding(innerpadding)
-                .background(Color(0xFFFCF3A8))) {
+                .background(Color(0xFFFCF9E7))) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFFCF3A8))
                 ) {
                     Card(
                         modifier = Modifier
-                            .padding(top = 50.dp, start = 20.dp)
-                            .size(height = 150.dp, width = 160.dp)
+                            .padding(10.dp)
+                            .size(height = 130.dp, width = 160.dp)
                             .clickable { navController.navigate(Routes.LoadingScreen) },
                         colors = CardDefaults.cardColors(
                             Color(0xFFB9F8F1)
@@ -76,8 +80,8 @@ fun AttdenceSemScreen(navController: NavController) {
 
                     Card(
                         modifier = Modifier
-                            .padding(top = 50.dp, start = 20.dp, end = 20.dp)
-                            .size(height = 150.dp, width = 160.dp)
+                            .padding(10.dp)
+                            .size(height = 130.dp, width = 160.dp)
                             .clickable { navController.navigate(Routes.LoadingScreen)},
                         colors = CardDefaults.cardColors(
                             Color(0xFFB9F8F1)
@@ -94,12 +98,11 @@ fun AttdenceSemScreen(navController: NavController) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFFCF3A8))
                 ) {
                     Card(
                         modifier = Modifier
-                            .padding(top = 20.dp, start = 20.dp)
-                            .size(height = 150.dp, width = 160.dp)
+                            .padding(10.dp)
+                            .size(height = 130.dp, width = 160.dp)
                             .clickable { navController.navigate(Routes.LoadingScreen)},
                         colors = CardDefaults.cardColors(
                             Color(0xFFB9F8F1)
@@ -114,8 +117,8 @@ fun AttdenceSemScreen(navController: NavController) {
 
                     Card(
                         modifier = Modifier
-                            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                            .size(height = 150.dp, width = 160.dp)
+                            .padding(10.dp)
+                            .size(height = 130.dp, width = 160.dp)
                             .clickable { navController.navigate(Routes.LoadingScreen)},
                         colors = CardDefaults.cardColors(
                             Color(0xFFB9F8F1)
@@ -128,16 +131,14 @@ fun AttdenceSemScreen(navController: NavController) {
                         )
                     }
                 }
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFFCF3A8))
                 ) {
                     Card(
                         modifier = Modifier
-                            .padding(top = 20.dp, start = 20.dp)
-                            .size(height = 150.dp, width = 160.dp)
+                            .padding(10.dp)
+                            .size(height = 130.dp, width = 160.dp)
                             .clickable { navController.navigate(Routes.AttendanceScreen) },
                         colors = CardDefaults.cardColors(
                             Color(0xFFB9F8F1)
@@ -152,8 +153,8 @@ fun AttdenceSemScreen(navController: NavController) {
 
                     Card(
                         modifier = Modifier
-                            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                            .size(height = 150.dp, width = 160.dp)
+                            .padding(10.dp)
+                            .size(height = 130.dp, width = 160.dp)
                             .clickable { navController.navigate(Routes.LoadingScreen)},
                         colors = CardDefaults.cardColors(
                             Color(0xFFB9F8F1)
@@ -170,12 +171,11 @@ fun AttdenceSemScreen(navController: NavController) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFFCF3A8))
                 ) {
                     Card(
                         modifier = Modifier
-                            .padding(top = 20.dp, start = 20.dp)
-                            .size(height = 150.dp, width = 160.dp)
+                            .padding(10.dp)
+                            .size(height = 130.dp, width = 160.dp)
                             .clickable { navController.navigate(Routes.LoadingScreen)},
                         colors = CardDefaults.cardColors(
                             Color(0xFFB9F8F1)
@@ -190,8 +190,8 @@ fun AttdenceSemScreen(navController: NavController) {
 
                     Card(
                         modifier = Modifier
-                            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                            .size(height = 150.dp, width = 160.dp)
+                            .padding(10.dp)
+                            .size(height = 130.dp, width = 160.dp)
                             .clickable { navController.navigate(Routes.LoadingScreen)},
                         colors = CardDefaults.cardColors(
                             Color(0xFFB9F8F1)
@@ -205,7 +205,7 @@ fun AttdenceSemScreen(navController: NavController) {
                     }
                 }
             }
-        }
+        }}
     )
 
 }

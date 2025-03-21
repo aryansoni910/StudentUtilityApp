@@ -4,12 +4,18 @@ import Choice
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.project_1.Presentation.Screen.GetStarted
+import com.example.project_1.Presentation.Screen.Location
+import com.example.project_1.Presentation.Screen.StudentScreen.PasswordManagerEditScreen
+import com.example.project_1.Presentation.Screen.StudentScreen.PasswordManagerScreen
 import com.example.project_1.Presentation.Screen.StudentScreen.StudentAttendanceScreen
 import com.example.project_1.Presentation.Screen.StudentScreen.StudentHomeScreen
 import com.example.project_1.Presentation.Screen.StudentScreen.StudentLoginScreen
@@ -35,9 +41,9 @@ import com.google.firebase.auth.FirebaseAuth
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun App() {
-
+fun App(viewModel: Project1ViewModel = hiltViewModel()) {
     val navController = rememberNavController()
+    val passwordState = viewModel.passwordstate.collectAsState()  // Observe state
 
     NavHost(navController = navController, startDestination = Routes.getstarted) {
         composable<Routes.choice> {
@@ -105,15 +111,24 @@ fun App() {
         }
 
         composable<Routes.StudentProfileScreen> {
-            StudentProfileScreen(firebaseAuth = FirebaseAuth.getInstance(), navController = navController)
+            StudentProfileScreen(
+                firebaseAuth = FirebaseAuth.getInstance(),
+                navController = navController
+            )
         }
 
         composable<Routes.StudentmarksScreen> {
-           StudentMarksScreen (firebaseAuth = FirebaseAuth.getInstance(), navController = navController)
+            StudentMarksScreen(
+                firebaseAuth = FirebaseAuth.getInstance(),
+                navController = navController
+            )
         }
 
         composable<Routes.Studentattendancescreen> {
-            StudentAttendanceScreen(firebaseAuth = FirebaseAuth.getInstance(), navController = navController)
+            StudentAttendanceScreen(
+                firebaseAuth = FirebaseAuth.getInstance(),
+                navController = navController
+            )
         }
 
         composable<Routes.StudentNewsScreen> {
@@ -121,6 +136,20 @@ fun App() {
         }
         composable<Routes.StudentServicesScreen> {
             StudentServicesScreen()
+        }
+        composable<Routes.CollegeMap> {
+            Location()
+        }
+        composable<Routes.PasswordManagerScreen> {
+            PasswordManagerScreen(navController = navController, passwordState = passwordState.value)
+        }
+
+        composable<Routes.AddPasswordManagerScreen> {
+            PasswordManagerEditScreen(
+                navController = navController,
+                passwordState = passwordState.value,
+                onEvent = {viewModel.upsertpassword()},
+            )
         }
     }
 

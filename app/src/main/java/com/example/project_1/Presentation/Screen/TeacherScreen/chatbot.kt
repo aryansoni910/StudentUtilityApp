@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,15 +51,16 @@ fun ChatBox(viewModel: Project1ViewModel = hiltViewModel()) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Help Ai",
+                        text = "Help Ai", color = Color.Black,
                         style = TextStyle(
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            fontStyle = FontStyle.Italic
                         ), modifier = Modifier.padding(start = 90.dp)
                     )
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = Color(0xFFF8ED84) // Custom color for the TopAppBar background
+                    containerColor = Color(0xFFE3B1FD) // Custom color for the TopAppBar background
                 )
 
             )

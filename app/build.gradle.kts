@@ -6,6 +6,8 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.serialization")version "2.0.0"
     alias(libs.plugins.google.gms.google.services)
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -82,7 +84,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth:21.3.0")
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     implementation ("androidx.compose.ui:ui:1.4.0")
-    implementation ("androidx.compose.material3:material3:1.0.0")
+    implementation ("androidx.compose.material3:material3:1.3.1")
     implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -90,4 +92,22 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation ("com.google.android.gms:play-services-location:18.0.0")
     implementation ("com.google.maps.android:maps-compose:2.8.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
+    implementation("com.google.maps.android:maps-compose:4.3.0")
+    implementation ("com.google.maps.android:maps-utils-ktx:2.2.0")
+    implementation("com.google.maps.android:android-maps-utils:3.10.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+
+    val room_version = "2.6.1"
+    implementation ("androidx.room:room-runtime:$room_version")
+    annotationProcessor ("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:$room_version")
+    implementation ("androidx.compose.material3:material3:1.3.1") // For Material3
+    implementation ("androidx.compose.material:material:1.7.8")
+    implementation ("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation ("androidx.compose.ui:ui-tooling-preview:1.7.8")
+    implementation ("androidx.compose.foundation:foundation:1.7.8")
+
 }

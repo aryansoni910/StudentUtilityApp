@@ -34,6 +34,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -55,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
@@ -71,7 +73,6 @@ import com.example.project_1.Presentation.Navigation.Routes
 import com.example.project_1.Presentation.ViewModel.Project1ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.json.JsonNull.content
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentAttendanceScreen(
@@ -103,48 +104,35 @@ fun StudentAttendanceScreen(
     } else {
         Scaffold(
             topBar = {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier
-                        .size(50.dp)
-                        .padding(top = 10.dp)
-                        .background(Color(0xFF7DCAEE))
-                ) {
-                    Icon(
-                        Icons.Default.ArrowBack,
-                        contentDescription = null
-                    )
-                }
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Your Attendance",
+                            text = "Your Attendance", color = Color.Black, fontStyle = FontStyle.Italic,
                             style = TextStyle(
-                                fontSize = 50.sp,
+                                fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold
-                            ), modifier = Modifier.padding(start = 5.dp)
+                            )
                         )
                     },
                     colors = TopAppBarDefaults.largeTopAppBarColors(
-                        containerColor = Color(0xFFF8EE95) // Custom color for the TopAppBar background
+                        containerColor = Color(0xFFF2C9FA) // Custom color for the TopAppBar background
                     )
                 )
             },
-
-            content = { innerpadding ->
+            content = { innerPadding ->
 
                 // Display the logged-in student's information
                 studentDataState.value.studentmarks?.let { student ->
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(top = 120.dp)
-                            .background(Color(0xFFF5F0C8))
+                            .padding(top = 100.dp)
+                            .background(Color(0xFFF5F5EC))
                     ) {
                         item {
                             // Display student name
                             Text(
-                                text = "Student Name: ${student.studentData.name}",
+                                text = "Student Name: ${student.studentData.name}", color = Color.Black,
                                 style = MaterialTheme.typography.displayMedium,
                                 modifier = Modifier.padding(top = 50.dp)
                             )
@@ -153,23 +141,32 @@ fun StudentAttendanceScreen(
                             // Calculate and display the attendance percentage
                             val attendancePercentage =
                                 calculateAttendancePercentage(student.studentData.attendance)
+
+                            // Display the attendance percentage with a progress bar
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(30.dp), colors = CardDefaults.cardColors(Color(
-                                    0xFFEBF1A3
-                                )
-                                )
+                                    .padding(30.dp),
+                                colors = CardDefaults.cardColors(Color(0xFFEBF1A3))
                             ) {
-                                Text(
-                                    text = "Attendance Percentage: ${
-                                        "%.2f".format(
-                                            attendancePercentage
-                                        )
-                                    }%",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(start = 40.dp)
-                                )
+                                Column(
+                                    modifier = Modifier.padding(start = 40.dp, top = 16.dp, end = 40.dp)
+                                ) {
+                                    Text(
+                                        text = "Attendance Percentage: ${
+                                            "%.2f".format(attendancePercentage)
+                                        }%", color = Color.Black,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    LinearProgressIndicator(
+                                    // Normalize to 0-1 range
+                                        modifier = Modifier.fillMaxWidth().height(10.dp).background(Color.Gray),
+                                        progress = attendancePercentage/100f,
+                                        color = Color.Black,
+
+                                    )
+                                }
                             }
 
                             // Display the subjects of the logged-in student inside Card
@@ -193,7 +190,6 @@ fun StudentAttendanceScreen(
                                             style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier.weight(1f)
                                         )
-
                                     }
                                 }
                             }

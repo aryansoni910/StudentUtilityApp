@@ -50,40 +50,41 @@ fun GetStarted(navController: NavController) {
         state, iterations = LottieConstants.IterateForever
     )
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Color(0xFFFCF7D3)
-            )
-    ) {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        )
-        {
-            LottieAnimation(
-                composition = state,
-                progress = { progress },
-                modifier = Modifier.size(600.dp)
-
-            )
-        }
-        Spacer(modifier = Modifier.padding(60.dp))
-
-        Button(
-            onClick = {
-                navController.navigate(Routes.choice)
-            }, colors = ButtonDefaults.buttonColors(Color(0xFF020933)), modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp)
-
-
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Color(0xFFE3B1FD)
+                )
         ) {
-            Text(text = "Get Started", fontWeight = FontWeight.W800, style = TextStyle.Default)
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            )
+            {
+                LottieAnimation(
+                    composition = state,
+                    progress = { progress },
+                    modifier = Modifier.size(600.dp)
+
+                )
+            }
+            Spacer(modifier = Modifier.padding(30.dp))
+
+            Button(
+                onClick = {
+                    navController.navigate(Routes.choice)
+                }, colors = ButtonDefaults.buttonColors(Color(0xFF020933)), modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+
+
+            ) {
+                Text(text = "Get Started", fontWeight = FontWeight.W800, style = TextStyle.Default, color = Color.White)
+            }
+
+
         }
-
-
     }
 }

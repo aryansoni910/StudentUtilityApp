@@ -67,4 +67,13 @@ import kotlinx.serialization.Serializable
 
         @Serializable
         object StudentServicesScreen
+
+        @Serializable
+        object CollegeMap
+
+        @Serializable
+        object PasswordManagerScreen
+
+        @Serializable
+        object AddPasswordManagerScreen
    }

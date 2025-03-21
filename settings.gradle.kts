@@ -8,6 +8,7 @@ pluginManagement {
             }
         }
         mavenCentral()
+        maven { url = uri("https://repo.maplibre.org/repository/maplibre") }
         gradlePluginPortal()
     }
 }

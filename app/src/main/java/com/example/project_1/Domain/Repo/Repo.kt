@@ -2,6 +2,8 @@ package com.example.project_1.Domain.Repo
 
 import android.net.Uri
 import com.example.project_1.Common.ResultState
+import com.example.project_1.Data.Database.Dao
+import com.example.project_1.Data.Database.PasswordManager
 import com.example.project_1.Data.Network.StudentModel
 import com.example.project_1.Domain.Model.Attendance
 import com.example.project_1.Domain.Model.AttendanceDataParent
@@ -29,4 +31,8 @@ interface Repo  {
     fun getstudentbyid(uid: String):Flow<ResultState<StudentDataParent>>
     fun getmarksbyid(uid: String):Flow<ResultState<StudentDataParent>>
     suspend fun newProvider(): Response<StudentModel>
+    suspend fun upsert(passwordManager: PasswordManager)
+    fun getAllPassword(): Flow<List<PasswordManager>>
+    suspend fun delete(passwordManager: PasswordManager)
+
 }

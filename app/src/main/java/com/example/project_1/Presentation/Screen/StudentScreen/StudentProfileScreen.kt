@@ -1,6 +1,7 @@
 package com.example.project_1.Presentation.Screen.StudentScreen
 
 
+import android.Manifest
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -49,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
@@ -61,10 +63,12 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.example.project_1.Presentation.Navigation.Routes
 import com.example.project_1.Presentation.ViewModel.Project1ViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.json.JsonNull.content
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun StudentProfileScreen(
     viewModel: Project1ViewModel = hiltViewModel(),
@@ -104,6 +108,11 @@ fun StudentProfileScreen(
                 imageUri.value = uri
             }
         }
+    val locationPermission = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.READ_MEDIA_IMAGES
+        )
+    )
 
     if (userProfileImageState.value.userData != null) {
         imageUrl.value = userProfileImageState.value.userData.toString()
@@ -115,7 +124,9 @@ fun StudentProfileScreen(
         }
     }
 
-
+    LaunchedEffect(key1 = locationPermission.permissions) {
+        locationPermission.launchMultiplePermissionRequest()
+    }
 
 
     LaunchedEffect(studentProfileScreenState.value.studentdata) {
@@ -144,29 +155,29 @@ fun StudentProfileScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Your Profile",
+                            text = "Your Profile", color = Color.Black,
                             style = TextStyle(
                                 fontSize = 30.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                fontStyle = FontStyle.Italic
                             ), modifier = Modifier.padding(start = 40.dp)
                         )
                     },
                     colors = TopAppBarDefaults.largeTopAppBarColors(
-                        containerColor = Color(0xFFFAF2AA) // Custom color for the TopAppBar background
+                        containerColor = Color(0xFFE3B1FD) // Custom color for the TopAppBar background
                     )
 
                 )
             },
             content = { innerpadding ->
 
-
+             Box(Modifier.fillMaxSize()){
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerpadding)
-                        .background(Color(0xFFFCF7D3)),
+                        .background(Color(0xFFFCFAEE)),
                 ) {
-                    Spacer(modifier = Modifier.padding(40.dp))
 // is staring we don,t have user iamge so we will show default image and  when user click on edit button then also user will se default image and if user select image then we will show that image then it will show user image
                     Box(
                         modifier = Modifier
@@ -187,7 +198,7 @@ fun StudentProfileScreen(
                                 is AsyncImagePainter.State.Loading -> CircularProgressIndicator()
                                 is AsyncImagePainter.State.Error -> Icon(
                                     Icons.Default.AccountCircle,
-                                    contentDescription = null
+                                    contentDescription = null, tint = Color.Black
                                 )
 
                                 else -> SubcomposeAsyncImageContent()
@@ -206,7 +217,7 @@ fun StudentProfileScreen(
                                 Icon(
                                     Icons.Default.Add,
                                     contentDescription = "Change Picture",
-                                    tint = Color.White
+                                    tint = Color.Black
                                 )
                             }
                         }
@@ -330,13 +341,13 @@ fun StudentProfileScreen(
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(Color(0xFF01061F))
                     ) {
-                        Text("Log out")
+                        Text("Log out", color = Color.White)
 
                     }
 
 
                 }
-            }
+            }}
         )
     }
 }

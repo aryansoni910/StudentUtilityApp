@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -86,21 +87,23 @@ fun AttendanceMarkScreen(
                                 text = "Attendance",
                                 style = TextStyle(
                                     fontSize = 50.sp,
-                                    fontWeight = FontWeight.Bold
-                                ), modifier = Modifier.padding(start = 60.dp)
+                                    fontWeight = FontWeight.Bold,
+                                    fontStyle = FontStyle.Italic
+                                ), modifier = Modifier.padding(5.dp)
                             )
                         },
                         colors = TopAppBarDefaults.largeTopAppBarColors(
-                            containerColor = Color(0xFFF8EE95)
+                            containerColor = Color(0xFFE3B1FD)
                         )
                     )
                 },
                 content = { innerpadding ->
+                    Box(Modifier.fillMaxSize()){
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color(0xFFF5F0C8))
-                            .padding(top = 100.dp)
+                            .background(Color(0xFFFAF7E3))
+                            .padding(innerpadding)
                     ) {
                         // Subject Input
                         OutlinedTextField(
@@ -157,7 +160,7 @@ fun AttendanceMarkScreen(
                              Text("Submit All Attendance")
                          }
                      }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.padding(16.dp))
 
 
                         // LazyColumn for Students
@@ -185,7 +188,7 @@ fun AttendanceMarkScreen(
                         // Submit Button to save attendance for all students
 
                     }
-                }
+                }}
             )
         }
     }

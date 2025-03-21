@@ -53,6 +53,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
@@ -98,30 +99,21 @@ fun StudentMarksScreen(
     } else {
         Scaffold(
             topBar = {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier
-                        .size(50.dp)
-                        .padding(top = 10.dp)
-                        .background(Color(0xFF7DCAEE))
-                ) {
-                    Icon(
-                        Icons.Default.ArrowBack,
-                        contentDescription = null
-                    )
-                }
+
+
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Your Marks",
+                            text = "Your Marks", color = Color.Black,
                             style = TextStyle(
                                 fontSize = 50.sp,
-                                fontWeight = FontWeight.Bold
-                            ), modifier = Modifier.padding(start = 50.dp)
+                                fontWeight = FontWeight.Bold,
+                                fontStyle = FontStyle.Italic
+                            ), modifier = Modifier.padding(5.dp)
                         )
                     },
                     colors = TopAppBarDefaults.largeTopAppBarColors(
-                        containerColor = Color(0xFFF8EE95) // Custom color for the TopAppBar background
+                        containerColor = Color(0xFFF2C9FA) // Custom color for the TopAppBar background
                     )
                 )
             },
@@ -133,13 +125,13 @@ fun StudentMarksScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(top = 120.dp)
-                            .background(Color(0xFFF5F0C8))
+                            .padding(innerpadding)
+                            .background(Color(0xFFECE9D4))
                     ) {
                         item {
                             // Display student name
                             Text(
-                                text = "Student Name: ${student.studentData.name}",
+                                text = "Student Name: ${student.studentData.name}", color = Color.Black,
                                 style = MaterialTheme.typography.displayMedium,
                                 modifier = Modifier.padding(top = 50.dp)
                             )

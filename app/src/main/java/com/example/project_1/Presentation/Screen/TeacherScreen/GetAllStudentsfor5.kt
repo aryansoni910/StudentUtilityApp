@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -114,23 +115,24 @@ fun GetAllStudentsfor5(
                                 text = "Marks",
                                 style = TextStyle(
                                     fontSize = 50.sp,
-                                    fontWeight = FontWeight.Bold
-                                ), modifier = Modifier.padding(start = 100.dp)
+                                    fontWeight = FontWeight.Bold,
+                                    fontStyle = FontStyle.Italic
+                                ), modifier = Modifier.padding(5.dp)
                             )
                         },
                         colors = TopAppBarDefaults.largeTopAppBarColors(
-                            containerColor = Color(0xFFF8EE95) // Custom color for the TopAppBar background
+                            containerColor = Color(0xFFE3B1FD) // Custom color for the TopAppBar background
                         )
                     )
                 },
 
                 content = { innerpadding ->
-
+                   Box(Modifier.fillMaxSize()){
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(top = 120.dp)
-                            .background(Color(0xFFF5F0C8))
+                            .padding(innerpadding)
+                            .background(Color(0xFFF6F4E4))
                     ) {
                         items(Studentstate.value.getallstudent) { student ->
                             StudentItem(
@@ -200,7 +202,7 @@ fun GetAllStudentsfor5(
                             }
                         )
                     }
-                }
+                }}
             )
         }
     }

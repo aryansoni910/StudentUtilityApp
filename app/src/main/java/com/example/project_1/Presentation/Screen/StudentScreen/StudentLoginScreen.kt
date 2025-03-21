@@ -18,6 +18,8 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,6 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,7 +58,7 @@ fun StudentLoginScreen(viewModel: Project1ViewModel = hiltViewModel(), navContro
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val context = LocalContext.current
-
+    var isPasswordVisible = remember { mutableStateOf(false) }
 
     val state = viewModel.studentStateScreen.collectAsState()
     if (state.value.isLoading) {
@@ -69,31 +73,33 @@ fun StudentLoginScreen(viewModel: Project1ViewModel = hiltViewModel(), navContro
         navController.navigate(Routes.StudentHomeScreen)
 
     } else {
-
+  Box(modifier = Modifier.fillMaxSize()){
         Column(
             modifier = Modifier
                 .fillMaxSize()  // This will make the Column take up the whole screen
                 .background(Color.LightGray)  // Set background color of the container
                 .background(
-                    Color(0xFFFCF7D3)
+                    Color(0xFFE3B1FD)
                 )
         ) {
             Text(
                 text = "Login", style = TextStyle(
-                    fontSize = 80.sp, fontWeight = FontWeight.Bold, color = Color(0xFF020933)
+                    fontSize = 60.sp, fontWeight = FontWeight.Bold, color = Color(0xFF020933)
                 ), modifier = Modifier.padding(top = 170.dp, start = 15.dp)
             )
 
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { email.value = it },
-                label = { Text("Email") },
-                placeholder = { Text("Enter your email") },
+                label = { Text("Email", color = Color.Black) },
+                placeholder = { Text("Enter your email", color = Color.Black) },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Email, contentDescription = null
+                        imageVector = Icons.Default.Email, contentDescription = null, tint = Color(
+                            0xFF08010E
+                        )
                     )
-                },
+                }, singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 50.dp, bottom = 15.dp)
@@ -102,13 +108,17 @@ fun StudentLoginScreen(viewModel: Project1ViewModel = hiltViewModel(), navContro
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { Text("Password") },
-                placeholder = { Text("Enter your password") },
+                label = { Text("Password", color = Color.Black) },
+                placeholder = { Text("Enter your password", color = Color.Black) },
                 leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock, contentDescription = null
-                    )
-                },
+                    IconButton(onClick = { isPasswordVisible.value = !isPasswordVisible.value }) {
+                        Icon(
+                            imageVector = if (isPasswordVisible.value) Icons.Default.Lock else Icons.Default.Lock,
+                            contentDescription = if (isPasswordVisible.value) "Hide password" else "Show password"
+                            , tint = Color.Black
+                        )
+                    }
+                },visualTransformation = if (isPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(), singleLine = true,
 
                 modifier = Modifier
                     .fillMaxWidth()
@@ -147,10 +157,13 @@ fun StudentLoginScreen(viewModel: Project1ViewModel = hiltViewModel(), navContro
                     Color(0xFF020933)
                 )
             ) {
-                Text(text = "Sign in")
+                Text(text = "Sign in",
+                    color = Color.White
+                )
             }
 
 
         }
     }
 }
+    }

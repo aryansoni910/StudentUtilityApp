@@ -30,89 +30,95 @@ import com.example.project_1.R
 @Composable
 fun Choice(navController: NavController) {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()  // This will make the Column take up the whole screen
-            .background(Color.LightGray)  // Set background color of the container
-            .background(
-                Color(0xFFFCF7D3)
-            )
-    )
-    {
 
-        Card(
+    Box(modifier = Modifier.fillMaxSize()) {
+
+
+        Column(
             modifier = Modifier
-                .padding(top = 150.dp, start = 53.dp)
-                .size(width = 280.dp, height = 240.dp)
-                .clickable {
-                    navController.navigate(Routes.SingUpScreen)
-                },
-            elevation = CardDefaults.cardElevation(15.dp),
-            shape = RoundedCornerShape(20.dp)
-
+                .fillMaxSize()  // This will make the Column take up the whole screen
+                .background(Color.LightGray)  // Set background color of the container
+                .background(
+                    Color(0xFFE3B1FD)
+                ), verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         )
-
         {
-            Column() {
-                Image(
-                    painter = painterResource(R.drawable.teacher),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                )
+
+            Card(
+                modifier = Modifier
+
+                    .size(width = 280.dp, height = 240.dp).padding(20.dp)
+                    .clickable {
+                        navController.navigate(Routes.SingUpScreen)
+                    },
+                elevation = CardDefaults.cardElevation(15.dp),
+                shape = RoundedCornerShape(20.dp)
+
+            )
+
+            {
+                Column() {
+                    Image(
+                        painter = painterResource(R.drawable.teacher),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    )
 
 
-                Text(
-                    text = "Teacher",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color(
-                            0xFF130C0E
-                        )
-                    ),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
+                    Text(
+                        text = "Teacher",
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color(
+                                0xFF130C0E
+                            )
+                        ),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+
+                }
 
             }
+            Spacer(Modifier.padding(30.dp))
 
+            Card(
+                modifier = Modifier
+                    .size(width = 280.dp, height = 240.dp).padding(20.dp)
+                    .clickable {
+                        navController.navigate(Routes.StudentLogin)
+                    },
+                elevation = CardDefaults.cardElevation(15.dp),
+                shape = RoundedCornerShape(20.dp)
+            ) {
+                Column(modifier = Modifier.padding(top = 5.dp)) {
+                    Image(
+                        painter = painterResource(R.drawable.student),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+
+                    )
+
+
+                    Text(
+                        text = "Student",
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color(
+                                0xFF130C0E
+                            )
+                        ),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+
+                }
+
+
+            }
         }
 
 
-        Card(
-            modifier = Modifier
-                .padding(top = 100.dp, start = 53.dp)
-                .size(width = 280.dp, height = 240.dp)
-                .clickable {navController.navigate(Routes.StudentLogin)
-                },
-            elevation = CardDefaults.cardElevation(15.dp),
-            shape = RoundedCornerShape(20.dp)
-        ) {
-            Column(modifier = Modifier.padding(top = 5.dp)) {
-                Image(
-                    painter = painterResource(R.drawable.student),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-
-                )
-
-
-                Text(
-                    text = "Student",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color(
-                            0xFF130C0E
-                        )
-                    ),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-
-            }
-
-
-        }
     }
-
-
 }

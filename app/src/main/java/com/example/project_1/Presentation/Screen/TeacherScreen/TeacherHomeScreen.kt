@@ -3,6 +3,7 @@ package com.example.project_1.Presentation.Screen.TeacherScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,36 +49,38 @@ fun TeacherHomeScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Teacher Dashboard",
+                        text = "Teacher Dashboard", color = Color.Black,
                         style = TextStyle(
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            fontStyle = FontStyle.Italic
                         ), modifier = Modifier.padding(start = 40.dp)
                     )
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = Color(0xFFFAF2AA) // Custom color for the TopAppBar background
+                    containerColor = Color(0xFFE3B1FD) // Custom color for the TopAppBar background
                 )
 
             )
         },
         content = { innerpadding -> // Add paddingValues here
+            Box(modifier = Modifier.fillMaxSize()){
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerpadding)
                     .background(color = Color.LightGray)
                     .background(
-                        Color(0xFFFCF7D3)
+                        Color(0xFFFCF9E7)
                     )
-                    .padding(top = 60.dp)
+                    .padding(top = 20.dp)
             ) {
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 15.dp)
+                            .padding(20.dp)
                             .clickable { navController.navigate(Routes.AttendanceSem) }
                     ) {
                         Image(
@@ -100,7 +103,7 @@ fun TeacherHomeScreen(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 10.dp)
+                            .padding(20.dp)
                             .clickable { navController.navigate(Routes.Sem)}
                     ) {
                         Image(
@@ -120,17 +123,17 @@ fun TeacherHomeScreen(navController: NavController) {
                         )
                     }
                 }
-                Spacer(modifier = Modifier.padding(top = 40.dp))
+                Spacer(modifier = Modifier.padding(top = 10.dp))
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 15.dp)
-                            .clickable { navController.navigate(Routes.GatePass) }
+                            .padding(20.dp)
+                            .clickable { navController.navigate(Routes.CollegeMap) }
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.gatepass),
+                            painter = painterResource(id = R.drawable.map),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(height = 120.dp, width = 120.dp)
@@ -138,18 +141,18 @@ fun TeacherHomeScreen(navController: NavController) {
                                 .padding(top = 10.dp)
                         )
                         Text(
-                            text = "GatePass", style = TextStyle(
+                            text = "Map", style = TextStyle(
                                 fontSize = 30.sp,
                                 fontStyle = FontStyle.Normal,
                                 fontWeight = FontWeight.Bold
-                            ), modifier = Modifier.padding(top = 20.dp, start = 15.dp)
+                            ), modifier = Modifier.padding(top = 20.dp, start = 45.dp)
                         )
                     }
                     Spacer(modifier = Modifier.padding(8.dp))
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 10.dp)
+                            .padding(20.dp)
                             .clickable { navController.navigate(Routes.AddStudent) }
                     ) {
                         Image(
@@ -169,12 +172,12 @@ fun TeacherHomeScreen(navController: NavController) {
                         )
                     }
                 }
-                Spacer(modifier = Modifier.padding(top = 40.dp))
+                Spacer(modifier = Modifier.padding(10.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 15.dp)
+                            .padding( 20.dp)
                             .clickable {
                                 navController.navigate(Routes.YourProfile)
                             }
@@ -199,7 +202,7 @@ fun TeacherHomeScreen(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .size(height = 180.dp, width = 180.dp)
-                            .padding(start = 10.dp)
+                            .padding(20.dp)
                             .clickable { navController.navigate(Routes.Help) }
                     ) {
                         Image(
@@ -219,8 +222,7 @@ fun TeacherHomeScreen(navController: NavController) {
                         )
                     }
                 }
-                Spacer(modifier = Modifier.padding(top = 30.dp))
             }
-        }
+        }}
     )
 }

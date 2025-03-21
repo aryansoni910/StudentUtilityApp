@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -90,19 +91,22 @@ fun AddStudentScreen(navController: NavController, viewModel: Project1ViewModel 
                         .size(50.dp)
                         .padding(top = 10.dp)
                         .background(Color(0xFF7DCAEE))
-                        .clickable { navController.navigate(Routes.TeacherHomeScreen) })
+                        .clickable  { navController.navigate(Routes.TeacherHomeScreen) {
+                        popUpTo(Routes.TeacherHomeScreen) { inclusive = true }
+                    }})
                 TopAppBar(
                     title = {
                         Text(
                             text = "Add Student",
                             style = TextStyle(
                                 fontSize = 50.sp,
-                                fontWeight = FontWeight.Bold
-                            ), modifier = Modifier.padding(start = 50.dp)
+                                fontWeight = FontWeight.Bold,
+                                fontStyle = FontStyle.Italic
+                            ), modifier = Modifier.padding(5.dp)
                         )
                     },
                     colors = TopAppBarDefaults.largeTopAppBarColors(
-                        containerColor = Color(0xFFFAF2AA) // Custom color for the TopAppBar background
+                        containerColor = Color(0xFFE3B1FD) // Custom color for the TopAppBar background
                     )
 
 
@@ -110,12 +114,12 @@ fun AddStudentScreen(navController: NavController, viewModel: Project1ViewModel 
 
             },
             content = { innerpadding ->
-
+              Box(Modifier.fillMaxSize()){
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerpadding)
-                        .background(Color(0xFFFCF7D3))
+                        .background(Color(0xFFC0E7F8))
                 ) {
                     Icon(
                         Icons.Default.ArrowBack,
@@ -123,25 +127,25 @@ fun AddStudentScreen(navController: NavController, viewModel: Project1ViewModel 
                         modifier = Modifier
                             .size(50.dp)
                             .padding(top = 10.dp)
-                            .background(Color(0xFF7DCAEE))
+                            .background(Color(0xFF8899F5))
                             .clickable { navController.navigate(Routes.TeacherHomeScreen) })
 
                     Image(
                         painter = painterResource(R.drawable.graduated),
                         contentDescription = null,
                         modifier = Modifier
-                            .padding(bottom = 20.dp, top = 20.dp)
-                            .size(140.dp)
+                            .padding(20.dp)
+                            .size(80.dp)
                             .align(Alignment.CenterHorizontally)
                     )
                     OutlinedTextField(
                         value = name.value,
                         onValueChange = { name.value = it },
-                        label = { Text("Name") },
-                        placeholder = { Text("Enter your Name") },
+                        label = { Text("Name", color = Color.Black) },
+                        placeholder = { Text("Enter your Name", color = Color.Black) },
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Person, contentDescription = null
+                                imageVector = Icons.Default.Person, contentDescription = null, tint = Color.Black
                             )
                         },
                         modifier = Modifier
@@ -153,11 +157,11 @@ fun AddStudentScreen(navController: NavController, viewModel: Project1ViewModel 
                     OutlinedTextField(
                         value = enrollentno.value,
                         onValueChange = { enrollentno.value = it },
-                        label = { Text("Enrollment number") },
-                        placeholder = { Text("Enter your Enrollment number") },
+                        label = { Text("Enrollment number", color = Color.Black) },
+                        placeholder = { Text("Enter your Enrollment number", color = Color.Black) },
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.AccountBox, contentDescription = null
+                                imageVector = Icons.Default.AccountBox, contentDescription = null, tint = Color.Black
                             )
                         },
                         modifier = Modifier
@@ -170,8 +174,8 @@ fun AddStudentScreen(navController: NavController, viewModel: Project1ViewModel 
                     OutlinedTextField(
                         value = branch.value,
                         onValueChange = { branch.value = it },
-                        label = { Text("Branch") },
-                        placeholder = { Text("Enter your Branch") },
+                        label = { Text("Branch", color = Color.Black) },
+                        placeholder = { Text("Enter your Branch", color = Color.Black) },
                         leadingIcon = {
                             Image(
                                 painter = painterResource(R.drawable.book),
@@ -189,11 +193,11 @@ fun AddStudentScreen(navController: NavController, viewModel: Project1ViewModel 
                     OutlinedTextField(
                         value = password.value,
                         onValueChange = { password.value = it },
-                        label = { Text("Password") },
-                        placeholder = { Text("Enter your Password") },
+                        label = { Text("Password", color = Color.Black) },
+                        placeholder = { Text("Enter your Password", color = Color.Black) },
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.DateRange, contentDescription = null
+                                imageVector = Icons.Default.DateRange, contentDescription = null, tint = Color.Black
                             )
                         },
                         modifier = Modifier
@@ -206,12 +210,12 @@ fun AddStudentScreen(navController: NavController, viewModel: Project1ViewModel 
                     OutlinedTextField(
                         value = sem.value,
                         onValueChange = { sem.value = it },
-                        label = { Text("Semester") },
-                        placeholder = { Text("Enter your Semester") },
+                        label = { Text("Semester", color = Color.Black) },
+                        placeholder = { Text("Enter your Semester", color = Color.Black) },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(id = R.drawable.presentation),
-                                contentDescription = null,
+                                contentDescription = null, tint = Color.Black,
                                 modifier = Modifier.size(30.dp)
                             )
                         },
@@ -224,16 +228,16 @@ fun AddStudentScreen(navController: NavController, viewModel: Project1ViewModel 
                     OutlinedTextField(
                         value = email.value,
                         onValueChange = { email.value = it },
-                        label = { Text("Email") },
-                        placeholder = { Text("Enter your Email") },
+                        label = { Text("Email", color = Color.Black) },
+                        placeholder = { Text("Enter your Email", color = Color.Black) },
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Email, contentDescription = null
+                                imageVector = Icons.Default.Email, contentDescription = null, tint = Color.Black
                             )
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 40.dp)
+                            .padding(bottom = 30.dp)
 
                     )
 
@@ -278,7 +282,7 @@ fun AddStudentScreen(navController: NavController, viewModel: Project1ViewModel 
                         Text(text = "Submit")
                     }
 
-
+                }
                 }
             })
     }

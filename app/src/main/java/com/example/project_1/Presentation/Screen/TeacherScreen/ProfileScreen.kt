@@ -1,5 +1,6 @@
 package com.example.project_1.Presentation.Screen.TeacherScreen
 
+import android.Manifest
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -48,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
@@ -60,10 +62,12 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.example.project_1.Presentation.Navigation.Routes
 import com.example.project_1.Presentation.ViewModel.Project1ViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.json.JsonNull.content
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun ProfileScreen(
     viewModel: Project1ViewModel = hiltViewModel(),
@@ -74,6 +78,22 @@ fun ProfileScreen(
         viewModel.getuserById(firebaseAuth.currentUser!!.uid)
 
     }
+
+
+
+
+
+    val locationPermission = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.READ_MEDIA_IMAGES
+        )
+    )
+
+
+    LaunchedEffect(key1 = locationPermission.permissions) {
+        locationPermission.launchMultiplePermissionRequest()
+    }
+
     val userProfileImageState = viewModel.userProfileImageState.collectAsStateWithLifecycle()
     val profileScreenState = viewModel.profileStateScreen.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -146,24 +166,25 @@ fun ProfileScreen(
                             text = "Your Profile",
                             style = TextStyle(
                                 fontSize = 30.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                fontStyle = FontStyle.Italic
                             ), modifier = Modifier.padding(start = 40.dp)
                         )
                     },
                     colors = TopAppBarDefaults.largeTopAppBarColors(
-                        containerColor = Color(0xFFFAF2AA) // Custom color for the TopAppBar background
+                        containerColor = Color(0xFFE3B1FD) // Custom color for the TopAppBar background
                     )
 
                 )
             },
             content = { innerpadding ->
 
-
+              Box(Modifier.fillMaxSize()){
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerpadding)
-                        .background(Color(0xFFFCF7D3)),
+                        .background(Color(0xFFFDFAD1)),
                 ) {
                     Spacer(modifier = Modifier.padding(40.dp))
 // is staring we don,t have user iamge so we will show default image and  when user click on edit button then also user will se default image and if user select image then we will show that image then it will show user image
@@ -186,7 +207,7 @@ fun ProfileScreen(
                                 is AsyncImagePainter.State.Loading -> CircularProgressIndicator()
                                 is AsyncImagePainter.State.Error -> Icon(
                                     Icons.Default.AccountCircle,
-                                    contentDescription = null
+                                    contentDescription = null, tint = Color.Black
                                 )
 
                                 else -> SubcomposeAsyncImageContent()
@@ -205,7 +226,7 @@ fun ProfileScreen(
                                 Icon(
                                     Icons.Default.Add,
                                     contentDescription = "Change Picture",
-                                    tint = Color.White
+                                    tint = Color.Black
                                 )
                             }
                         }
@@ -222,7 +243,7 @@ fun ProfileScreen(
                         value = firstName.value,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 80.dp),
+                            .padding(top = 40.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedBorderColor = Color(0xFFFCF7D3),
                             focusedBorderColor = Color(0xFF0E0C01)
@@ -333,7 +354,7 @@ fun ProfileScreen(
 
                     }
 
-
+                }
                 }
             }
         )

@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.sp
 import com.example.project_1.Presentation.Navigation.Routes
 import com.example.project_1.R
@@ -38,15 +39,16 @@ fun StudentServicesScreen() {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Services",
+                        text = "Services", color = Color.Black,
                         style = TextStyle(
                             fontSize = 50.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            fontStyle = FontStyle.Italic
                         ), modifier = Modifier.padding(start = 70.dp)
                     )
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = Color(0xFFF8EE95)
+                    containerColor = Color(0xFFE3B1FD)
                 )
             )
         },
@@ -55,7 +57,7 @@ fun StudentServicesScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFF5F0C8))
+                    .background(Color(0xFFFAF6DC))
                     .padding(innerpadding)
                     .padding(top = 100.dp)
 
@@ -65,7 +67,7 @@ fun StudentServicesScreen() {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Card(
                         modifier = Modifier
-                            .padding(top = 20.dp, start = 20.dp)
+                            .padding(10.dp)
                             .size(height = 150.dp, width = 160.dp)
                             .clickable {
                                 openWebPage(
@@ -86,15 +88,15 @@ fun StudentServicesScreen() {
                                 .padding(top = 20.dp)
                         )
                         Text(
-                            "Moddle",
+                            "Moodle",
                             modifier = Modifier.padding(top = 20.dp, start = 30.dp),
-                            style = TextStyle(fontSize = 30.sp)
+                            style = TextStyle(fontSize = 30.sp), color = Color.Black
                         )
                     }
 
                     Card(
                         modifier = Modifier
-                            .padding(top = 20.dp, start = 20.dp)
+                            .padding(10.dp)
                             .size(height = 150.dp, width = 160.dp)
                             .clickable {
                                 openWebPage(
@@ -117,14 +119,15 @@ fun StudentServicesScreen() {
                         Text(
                             "Scholarship",
                             modifier = Modifier.padding(top = 20.dp, start = 20.dp),
-                            style = TextStyle(fontSize = 25.sp)
+                            style = TextStyle(fontSize = 25.sp, color = Color.Black)
                         )
                     }
                 }
+                Spacer(modifier = Modifier.padding(10.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Card(
                         modifier = Modifier
-                            .padding(top = 70.dp, start = 20.dp)
+                            .padding(10.dp)
                             .size(height = 150.dp, width = 160.dp)
                             .clickable {
                                 openWebPage(
@@ -147,13 +150,13 @@ fun StudentServicesScreen() {
                         Text(
                             "Rgpv",
                             modifier = Modifier.padding(top = 20.dp, start = 45.dp),
-                            style = TextStyle(fontSize = 30.sp)
+                            style = TextStyle(fontSize = 30.sp, color = Color.Black)
                         )
                     }
 
                     Card(
                         modifier = Modifier
-                            .padding(top = 70.dp, start = 20.dp)
+                            .padding(10.dp)
                             .size(height = 150.dp, width = 160.dp)
                             .clickable {
                                 openWebPage(
@@ -174,7 +177,7 @@ fun StudentServicesScreen() {
                                 .padding(top = 20.dp)
                         )
                         Text(
-                            "Fees",
+                            "Fees", color = Color.Black,
                             modifier = Modifier.padding(top = 20.dp, start = 45.dp),
                             style = TextStyle(fontSize = 30.sp)
                         )

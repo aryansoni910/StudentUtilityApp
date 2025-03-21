@@ -1,11 +1,15 @@
 package com.example.project_1.Data.Repo
 
+import android.app.Application
 import android.net.Uri
 import android.util.Log
 import com.example.project_1.Common.Gate_Pass
 import com.example.project_1.Common.ResultState
 import com.example.project_1.Common.Student_Collection
 import com.example.project_1.Common.User_Collection
+import com.example.project_1.Data.Database.Dao
+import com.example.project_1.Data.Database.PasswordManager
+import com.example.project_1.Data.Database.PasswordManagerDataBase
 import com.example.project_1.Data.Network.Apiprovider
 import com.example.project_1.Data.Network.StudentModel
 import com.example.project_1.Domain.Model.AttendanceDataParent
@@ -23,13 +27,16 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.onEach
 import retrofit2.Response
 import java.util.UUID
 import javax.inject.Inject
 
 class RepoImpl @Inject constructor(
     var firebaseAuth: FirebaseAuth,
-    var firebaseFirestore: FirebaseFirestore
+    var firebaseFirestore: FirebaseFirestore,
+    var passwordManagerDataBase: PasswordManagerDataBase,
+    var application: Application,
 ) : Repo {
     override fun LoginWithEmailAndPassword(userData: UserData): Flow<ResultState<String>> =
         callbackFlow {
@@ -185,28 +192,29 @@ class RepoImpl @Inject constructor(
 
         }
 
-    override fun StudentLoginWithEmailAndPassword(studentData: StudentData): Flow<ResultState<String>> = callbackFlow {
-        trySend(ResultState.Loading)
+    override fun StudentLoginWithEmailAndPassword(studentData: StudentData): Flow<ResultState<String>> =
+        callbackFlow {
+            trySend(ResultState.Loading)
 
 
 
-        firebaseAuth.signInWithEmailAndPassword(studentData.email, studentData.password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    trySend(ResultState.Success("User Logged In Successfully"))
-                } else {
-                    if (it.exception != null) {
-                        trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+            firebaseAuth.signInWithEmailAndPassword(studentData.email, studentData.password)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(ResultState.Success("User Logged In Successfully"))
+                    } else {
+                        if (it.exception != null) {
+                            trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
+                        }
                     }
                 }
+
+
+
+            awaitClose {
+                close()
             }
-
-
-
-        awaitClose {
-            close()
         }
-    }
 
     override fun getstudentbyid(uid: String): Flow<ResultState<StudentDataParent>> = callbackFlow {
         trySend(ResultState.Loading)
@@ -231,20 +239,19 @@ class RepoImpl @Inject constructor(
         trySend(ResultState.Loading)
 
         firebaseFirestore.collection(Student_Collection)
-            .document(uid).get().addOnCompleteListener{
-                if(it.isSuccessful){
+            .document(uid).get().addOnCompleteListener {
+                if (it.isSuccessful) {
                     val data = it.result.toObject(StudentData::class.java)!!
-                    val studentDataParent = StudentDataParent(it.result.id,data)
+                    val studentDataParent = StudentDataParent(it.result.id, data)
 
                     trySend(ResultState.Success(studentDataParent))
-                }
-                else{
-                    if(it.exception!= null){
+                } else {
+                    if (it.exception != null) {
                         trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
                     }
                 }
             }
-        awaitClose{
+        awaitClose {
             close()
         }
     }
@@ -253,26 +260,50 @@ class RepoImpl @Inject constructor(
         return Apiprovider.provideApi().getNewsFromServer()
     }
 
+    override suspend fun upsert(passwordManager: PasswordManager) =
+        passwordManagerDataBase.dao().upsertPassword(passwordManager)
 
-    override fun userProfileImage(uri: Uri): Flow<ResultState<String>> = callbackFlow {
-        trySend(ResultState.Loading)
-        FirebaseStorage.getInstance().reference.child("userProfileImages/${System.currentTimeMillis()}+${firebaseAuth.currentUser?.uid}")
-            .putFile(uri ?: Uri.EMPTY).addOnCompleteListener {
-                it.result.storage.downloadUrl.addOnSuccessListener { imageUrl ->
-                    trySend(ResultState.Success(imageUrl.toString()))
-                }
-                if (it.exception != null) {
-                    trySend(ResultState.Error(it.exception?.localizedMessage.toString()))
-                }
-
-            }
-        awaitClose {
-            close()
+    override fun getAllPassword() =
+        passwordManagerDataBase.dao().getPassword().onEach { passwords ->
         }
 
+    override suspend fun delete(passwordManager: PasswordManager) =
+        passwordManagerDataBase.dao().deletePassword(passwordManager)
 
+
+    override fun userProfileImage(uri: Uri): Flow<ResultState<String>> = callbackFlow {
+        // Start by sending the loading state
+        trySend(ResultState.Loading)
+
+        // Reference for the Firebase Storage path
+        val storageReference = FirebaseStorage.getInstance().reference
+            .child("userProfileImages/${System.currentTimeMillis()}+${firebaseAuth.currentUser?.uid}")
+
+        // Upload the file
+        val uploadTask = storageReference.putFile(uri)
+
+        // Add an OnCompleteListener for the upload task
+        uploadTask.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // If successful, get the download URL
+                task.result?.storage?.downloadUrl?.addOnSuccessListener { imageUrl ->
+                    trySend(ResultState.Success(imageUrl.toString()))
+                }?.addOnFailureListener { exception ->
+                    trySend(ResultState.Error(exception.localizedMessage ?: "Unknown error"))
+                }
+            } else {
+                // If the upload failed
+                trySend(ResultState.Error(task.exception?.localizedMessage ?: "Unknown error"))
+            }
+        }
+
+        // Await closure of the flow
+        awaitClose {
+            // Close the flow if the task is cancelled or completed
+            close()
+        }
     }
-    
+
 
     override fun StudentregisterUserWithEmailAndPassword(studentData: StudentData): Flow<ResultState<String>> =
         callbackFlow {

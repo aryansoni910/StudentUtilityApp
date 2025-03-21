@@ -17,6 +17,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,6 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,6 +55,8 @@ fun Login(viewModel: Project1ViewModel = hiltViewModel(), navController: NavCont
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val context = LocalContext.current
+    var isPasswordVisible = remember { mutableStateOf(false) }
+
 
 
     val state = viewModel.loginScreenState.collectAsState()
@@ -67,101 +72,107 @@ fun Login(viewModel: Project1ViewModel = hiltViewModel(), navController: NavCont
         navController.navigate(Routes.TeacherHomeScreen)
 
     } else {
+        Box(Modifier.fillMaxSize().background(   Color(0xFFE3B1FD))) {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()  // This will make the Column take up the whole screen
-                .background(Color.LightGray)  // Set background color of the container
-                .background(
-                    Color(0xFFFCF7D3)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()  // This will make the Column take up the whole screen
+                    .background(Color.LightGray)  // Set background color of the container
+                    .background(
+                        Color(0xFFE3B1FD)
+                    )
+            ) {
+                Text(
+                    text = "Login", style = TextStyle(
+                        fontSize = 60.sp, fontWeight = FontWeight.Bold, color = Color(0xFF020933)
+                    ), modifier = Modifier.padding(top = 150.dp, start = 15.dp)
                 )
-        ) {
-            Text(
-                text = "Login", style = TextStyle(
-                    fontSize = 80.sp, fontWeight = FontWeight.Bold, color = Color(0xFF020933)
-                ), modifier = Modifier.padding(top = 170.dp, start = 15.dp)
-            )
 
-            OutlinedTextField(
-                value = email.value,
-                onValueChange = { email.value = it },
-                label = { Text("Email") },
-                placeholder = { Text("Enter your email") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Email, contentDescription = null
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 50.dp, bottom = 15.dp)
+                OutlinedTextField(
+                    value = email.value,
+                    onValueChange = { email.value = it },
+                    label = { Text("Email", color = Color.Black) },
+                    placeholder = { Text("Enter your email", color = Color.Black) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Email, contentDescription = null, tint = Color.Black
+                        )
+                    }, singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 50.dp, bottom = 15.dp)
 
-            )
-            OutlinedTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
-                label = { Text("Password") },
-                placeholder = { Text("Enter your password") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock, contentDescription = null
-                    )
-                },
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 80.dp)
-
-            )
-
-            Button(
-                onClick = {
-                    if (
-                        email.value.isNotBlank() && password.value.isNotBlank()
-                    ) {
-                        if (email.value.endsWith("gmail.com")) {
-                            val userData = UserData(
-                                firstName = "",
-                                lastName = "",
-                                email = email.value,
-                                password = password.value,
-                                phoneNumber = ""
-                            )
-                            viewModel.login(userData)
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "Please use a valid email address ending with 'gmail.com'",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                )
+                OutlinedTextField(
+                    value = password.value,
+                    onValueChange = { password.value = it },
+                    label = { Text("Password", color = Color.Black) },
+                    placeholder = { Text("Enter your password", color = Color.Black) },
+                    leadingIcon = {
+                        IconButton(onClick = { isPasswordVisible.value = !isPasswordVisible.value }) {
+                            Icon(
+                                imageVector = if (isPasswordVisible.value) Icons.Default.Lock else Icons.Default.Lock,
+                                contentDescription = if (isPasswordVisible.value) "Hide password" else "Show password"
+                           , tint = Color.Black )
                         }
-                    } else {
-                        Toast.makeText(context, "Please Fill All Fields", Toast.LENGTH_SHORT).show()
+                    },visualTransformation = if (isPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(), singleLine = true,
 
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 80.dp)
 
-                    }
-                },
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 30.dp, end = 30.dp, bottom = 30.dp),
-                colors = ButtonDefaults.buttonColors(
-                    Color(0xFF020933)
                 )
-            ) {
-                Text(text = "Sign in")
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text("Create account?")
-                TextButton(onClick = {
-                    navController.navigate(Routes.SingUpScreen)
-                }) {
-                    Text("Sign Up", color = Color.Blue)
-                }
-            }
 
+                Button(
+                    onClick = {
+                        if (
+                            email.value.isNotBlank() && password.value.isNotBlank()
+                        ) {
+                            if (email.value.endsWith("gmail.com")) {
+                                val userData = UserData(
+                                    firstName = "",
+                                    lastName = "",
+                                    email = email.value,
+                                    password = password.value,
+                                    phoneNumber = ""
+                                )
+                                viewModel.login(userData)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Please use a valid email address ending with 'gmail.com'",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } else {
+                            Toast.makeText(context, "Please Fill All Fields", Toast.LENGTH_SHORT)
+                                .show()
+
+
+                        }
+                    },
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = 30.dp, end = 30.dp, bottom = 15.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        Color(0xFF020933)
+                    )
+                ) {
+                    Text(text = "Sign in", color = Color.White)
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Create account?")
+                    TextButton(onClick = {
+                        navController.navigate(Routes.SingUpScreen)
+                    }) {
+                        Text("Sign Up", color = Color.Blue)
+                    }
+                }
+
+            }
         }
     }
 }

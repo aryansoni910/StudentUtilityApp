@@ -1,18 +1,17 @@
 package com.example.project_1.Presentation.ViewModel
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.health.connect.datatypes.ExerciseRoute
-import android.location.Location
 import android.net.Uri
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project_1.Common.ApiKey
 import com.example.project_1.Common.ResultState
+import com.example.project_1.Data.Database.PasswordManager
+import com.example.project_1.Data.Database.PasswordManagerDataBase
 import com.example.project_1.Data.Network.StudentModel
-import com.example.project_1.Data.Repo.RepoImpl
 import com.example.project_1.Domain.Model.AttendanceDataParent
 import com.example.project_1.Domain.Model.ChatBotEnum
 import com.example.project_1.Domain.Model.GatePassdata
@@ -26,9 +25,12 @@ import com.example.project_1.Domain.Repo.Repo
 import com.example.project_1.Domain.UseCase.AddAtendanceUseCase
 import com.example.project_1.Domain.UseCase.AddMarks5UseCase
 import com.example.project_1.Domain.UseCase.AddStudentUseCase
+import com.example.project_1.Domain.UseCase.DeletePasswordUseCase
 import com.example.project_1.Domain.UseCase.GatePassUseCase
 import com.example.project_1.Domain.UseCase.GetAllStudents5UseCase
+import com.example.project_1.Domain.UseCase.GetPasswordUseCase
 import com.example.project_1.Domain.UseCase.LoginUserUseCase
+import com.example.project_1.Domain.UseCase.PasswordUpsertUseCase
 import com.example.project_1.Domain.UseCase.ProfileScreenUsecase
 import com.example.project_1.Domain.UseCase.SignUPUseCase
 import com.example.project_1.Domain.UseCase.StudentLoginUsecase
@@ -37,16 +39,13 @@ import com.example.project_1.Domain.UseCase.StudentProfileScreenUseCase
 import com.example.project_1.Domain.UseCase.UserProfileImageUseCase
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.Task
-import com.google.maps.android.compose.CameraPositionState
-import com.google.maps.android.compose.MarkerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -65,8 +64,11 @@ class Project1ViewModel @Inject constructor(
     private val studentMarksUseCase: StudentMarksUseCase,
     private val studentProfileScreenUseCase: StudentProfileScreenUseCase,
     private val repo: Repo,
-    private val application: Application
+    private val getpasswordUseCase:GetPasswordUseCase,
+    private val passwordUpsertUseCase: PasswordUpsertUseCase,
+    private val deletePasswordUseCase: DeletePasswordUseCase
 ) : ViewModel() {
+
     private val _loginScreenState = MutableStateFlow(LoginScreenState())
     val loginScreenState = _loginScreenState.asStateFlow()
 
@@ -104,10 +106,6 @@ class Project1ViewModel @Inject constructor(
     private val _studentMarksScreenState = MutableStateFlow((StudentMarksScreenState()))
     val studentMarksScreenState = _studentMarksScreenState.asStateFlow()
 
-    private val fusedLocationClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(application)
-
-
 
     val res = mutableStateOf<StudentModel?>(null)
 
@@ -122,7 +120,7 @@ class Project1ViewModel @Inject constructor(
 
     private val genAI by lazy {
         GenerativeModel(
-            modelName = "gemini-pro",
+            modelName = "gemini-2.0-flash",
             apiKey = ApiKey
         )
     }
@@ -130,15 +128,64 @@ class Project1ViewModel @Inject constructor(
         mutableStateListOf<chatbotData>()
     }
 
+    private var _passwordstate = MutableStateFlow<AppState>(AppState())
+    val allPassword = getpasswordUseCase.getpassword().stateIn(
+        scope = viewModelScope, started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
+    )
+    var passwordstate = combine( _passwordstate,allPassword){
+           _passwordstate,passwords->
+        _passwordstate.copy(allpassword = passwords)
+    }.stateIn(
+        scope = viewModelScope, started = SharingStarted.WhileSubscribed(5000),
+        initialValue = AppState()
+    )
+    fun getallpassword() {
+        viewModelScope.launch {
+            getpasswordUseCase.getpassword().collect {
+                _passwordstate.value = _passwordstate.value.copy(allpassword = it)
+            }
+        }
+    }
+    fun upsertpassword(){
+        val password = PasswordManager(
+            id = passwordstate.value.id.value,
+            title = passwordstate.value.title.value,
+            user_name = passwordstate.value.name.value ,
+            password = passwordstate.value.password.value
+        )
+        viewModelScope.launch {
+            passwordUpsertUseCase.PasswordUpssert(password)
+        }
+        passwordstate.value.id.value =0
+        passwordstate.value.title.value =""
+        passwordstate.value.name.value =""
+        passwordstate.value.password.value =""
+    }
 
+    fun deletepassword(){
+        val password = PasswordManager(
+            id = passwordstate.value.id.value,
+            title = passwordstate.value.title.value,
+            user_name = passwordstate.value.name.value ,
+            password = passwordstate.value.password.value
+        )
+        viewModelScope.launch {
+            deletePasswordUseCase.PasswordDelete(password)
+        }
+        passwordstate.value.id.value =0
+        passwordstate.value.title.value =""
+        passwordstate.value.name.value =""
+        passwordstate.value.password.value =""
 
-
-    suspend fun getNews(repo: Repo): StudentModel?{
-        return repo.newProvider().body()
     }
 
 
 
+
+    suspend fun getNews(repo: Repo): StudentModel? {
+        return repo.newProvider().body()
+    }
 
 
     fun sendMessage(message: String) = viewModelScope.launch {
@@ -152,7 +199,6 @@ class Project1ViewModel @Inject constructor(
             list.add(chatbotData(it, ChatBotEnum.Model.role))
         }
     }
-
 
 
     fun Studentlogin(studentData: StudentData) {
@@ -387,6 +433,8 @@ class Project1ViewModel @Inject constructor(
                             isLoading = false,
                             userData = it.data
                         )
+
+
                     }
                 }
             }
@@ -508,5 +556,13 @@ data class StudentMarksScreenState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val studentmarks: StudentDataParent? = null
+)
+
+data class AppState(
+    var allpassword :List<PasswordManager> = emptyList<PasswordManager>(),
+    var id:MutableState<Int> = mutableStateOf(0),
+    var name :MutableState<String> = mutableStateOf(""),
+    var title :MutableState<String> = mutableStateOf(""),
+    var password :MutableState<String> = mutableStateOf("")
 )
 
