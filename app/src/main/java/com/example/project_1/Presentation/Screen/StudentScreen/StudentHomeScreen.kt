@@ -230,7 +230,7 @@ fun BottomNavigationBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
             onClick = { onTabSelected(2) },
             icon = {
                 Image(
-                    painter = painterResource(R.drawable.map),
+                    painter = painterResource(R.drawable.pin),
                     contentDescription = null,
                     modifier = Modifier
                         .size(height = 50.dp, width = 60.dp)
